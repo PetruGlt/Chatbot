@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `username` varchar(30) NOT NULL,
   `password` varchar(50) NOT NULL,
+  `access` ENUM('USER', 'ADMIN') NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -35,7 +36,11 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('user250','abc123');
+INSERT INTO `users` VALUES 
+  ('user1','12345', 'USER'),
+  ('user2','12346', 'USER').
+  ('admin1','12345', 'ADMIN'),
+  ('admin2','12345', 'ADMIN');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
