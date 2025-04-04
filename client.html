@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Chatbot for Banking Assistance - Login</title>
     <script src="client.js" defer></script>
+    <link href="stylePage.css" rel="stylesheet" type="text/css">
 </head>
-<body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
 
-    <div style="text-align: center;">
-        <h2>Chatbot for Banking Assistance</h2>
+<body>
 
+<div>
+    <h2>Chatbot for Banking Assistance</h2>
+
+    <div class="radio-group">
+        <label>
+            <input type="radio" name="accountType" value="client" id="client" checked>
+            <b>Client</b>
+        </label>
+        <label>
+            <input type="radio" name="accountType" value="expert" id="expert">
+            Expert
+        </label>
+    </div><br>
+
+    <form id="loginForm" method="post">
         <div>
-            <label>
-                <input type="radio" name="accountType" value="client" checked>
-                <b>User</b>
-            </label>
-            <label>
-                <input type="radio" name="accountType" value="expert">
-                Expert
-            </label>
-        </div><br>
+            <input type="text" id="username" placeholder="Enter your username" required><br><br>
+            <input type="password" id="password" placeholder="Enter your password" required><br><br>
 
-        <div>
-            <label for="username">User</label><br>
-            <input type="text" id="username"><br><br>
-
-            <label for="password">Pass</label><br>
-            <input type="password" id="password"><br><br>
-
-            <button id="loginBtn">LOGIN</button>
+            <button type="submit">LOGIN</button>
         </div>
-    </div>
+    </form>
+</div>
 
 </body>
+
 </html>
+

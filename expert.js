@@ -13,7 +13,7 @@ class ExpertLogin {
     }
 
     login() {
-        if (this.validateCredentials() == 0) window.open("", "_blank");
+        if (this.validateCredentials() == 0) window.location.href = "MainPage.html";
         else if (this.validateCredentials() == 1) alert("E nevoie să introduceți o parolă!");
         else if (this.validateCredentials() == 2) alert("E nevoie să introduceți un ID!");
         else alert("E nevoie să introduceți un ID si o parolă!");
@@ -21,16 +21,25 @@ class ExpertLogin {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const loginBtn = document.getElementById("loginBtn");
+    const loginForm = document.getElementById("loginForm");
+    const clientRadio = document.getElementById("client");
 
-    loginBtn.addEventListener("click", () => {
-        const accountType = document.querySelector('input[name="accountType"]:checked').value;
+    if (loginForm) {
+        loginForm.addEventListener("submit", (event) => {
+            event.preventDefault();
 
-        if (accountType === "expert") {
-            const id = document.getElementById("id").value.trim();
+            const id = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
+
             const expertLogin = new ExpertLogin(id, password);
             expertLogin.login();
-        }
-    });
+        });
+    }
+
+
+    if (clientRadio) {
+        clientRadio.addEventListener("change", () => {
+            window.location.href = "client.html";
+        });
+    }
 });
