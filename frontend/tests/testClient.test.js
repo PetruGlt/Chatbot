@@ -2,7 +2,7 @@ const {ClientLogin} = require('./testClient');
 
 describe("Testing ClientLogin class", () => {
 
-    test("should pass when both ID and password are filled", () => {
+    test("should pass when both username and password are filled", () => {
         const login = new ClientLogin("user", "pass");
         expect(login.validateCredentials()).toBe(0);
     });
