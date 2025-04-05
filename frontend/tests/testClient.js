@@ -20,7 +20,6 @@ class ClientLogin {
     }
 }
 
-// this is needed to test the class in another file
 if (typeof module !== 'undefined') {
     module.exports = {ClientLogin};
 }

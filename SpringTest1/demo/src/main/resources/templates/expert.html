@@ -1,3 +1,5 @@
+<!-- expert.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot for Banking Assistance - Login</title>
-    <script src="client.js" defer></script>
-    <link href="stylePage.css" rel="stylesheet" type="text/css">
+    <script src="/expert.js" defer></script>
+    <link href="/stylePage.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -16,18 +18,18 @@
 
     <div class="radio-group">
         <label>
-            <input type="radio" name="accountType" value="client" id="client" checked>
-            <b>Client</b>
+            <input type="radio" name="accountType" value="client" id="client">
+            Client
         </label>
         <label>
-            <input type="radio" name="accountType" value="expert" id="expert">
-            Expert
+            <input type="radio" name="accountType" value="expert" id="expert" checked>
+            <b>Expert</b>
         </label>
     </div><br>
 
     <form id="loginForm" method="post">
         <div>
-            <input type="text" id="username" placeholder="Enter your username" required><br><br>
+            <input type="text" id="username" placeholder="Enter your ID" required><br><br>
             <input type="password" id="password" placeholder="Enter your password" required><br><br>
 
             <button type="submit">LOGIN</button>
@@ -38,4 +40,3 @@
 </body>
 
 </html>
-

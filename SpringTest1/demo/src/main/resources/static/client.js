@@ -14,7 +14,7 @@ class ClientLogin {
     }
 
     login() {
-        if (this.validateCredentials() == 0) window.location.href = "MainPage.html";
+        if (this.validateCredentials() == 0) window.location.href = "/main";
         else if (this.validateCredentials() == 1) alert("E nevoie să introduceți o parolă!");
         else if (this.validateCredentials() == 2) alert("E nevoie să introduceți un username!");
         else alert("E nevoie să introduceți un username si o parolă!");
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (expertRadio) {
         expertRadio.addEventListener("change", () => {
-            window.location.href = "expert.html";
+            window.location.href = "/expert";
         });
     }
 
