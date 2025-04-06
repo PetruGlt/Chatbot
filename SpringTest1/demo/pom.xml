@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+
+    <modelVersion>4.0.0</modelVersion> <!-- Versiunea modelului POM -->
+
     <parent>
+        <!-- Setează proiectul ca subproiect al Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.4.4</version> <!-- Versiunea de Spring Boot -->
     </parent>
-    <groupId>org.example</groupId>
-    <artifactId>demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>demo</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+
+    <!-- Informații despre proiect -->
+    <groupId>org.example</groupId> <!-- Grupul proiectului -->
+    <artifactId>demo</artifactId>  <!-- Numele proiectului -->
+    <version>0.0.1-SNAPSHOT</version> <!-- Versiunea curentă -->
+    <name>demo</name> <!-- Numele pentru afișare -->
+    <description>demo</description> <!-- Descrierea proiectului -->
+
     <properties>
+        <!-- Setează versiunea Java folosită -->
         <java.version>17</java.version>
     </properties>
+
     <dependencies>
+        <!-- Starter pentru aplicații web (REST API, MVC) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Starter pentru JPA (persistență în baze de date) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Starter pentru server-side rendering cu Thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- Conector MySQL pentru accesul la baza de date -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope> <!-- Este folosit doar la rulare -->
+        </dependency>
+
+        <!-- Starter pentru testare (JUnit, Mockito) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <scope>test</scope> <!-- Se încarcă doar pentru teste -->
         </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
+            <!-- Plugin pentru crearea unui JAR executabil Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

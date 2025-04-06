@@ -14,10 +14,28 @@ class ClientLogin {
     }
 
     login() {
-        if (this.validateCredentials() == 0) window.location.href = "/main";
+        if (this.validateCredentials() == 0){
+            //Trimiterea credentialelor catre server
+            const encodedCredentials = btoa(this.username + ':' + this.password);
+
+            fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + encodedCredentials,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            }).then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
         else if (this.validateCredentials() == 1) alert("E nevoie să introduceți o parolă!");
         else if (this.validateCredentials() == 2) alert("E nevoie să introduceți un username!");
         else alert("E nevoie să introduceți un username si o parolă!");
+
+
     }
 }
 
