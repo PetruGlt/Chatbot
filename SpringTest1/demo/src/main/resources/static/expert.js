@@ -13,12 +13,12 @@ class ExpertLogin {
     }
 
     login() {
-        //Trimiterea credentialelor catre server
+
         if (this.validateCredentials() == 0) {
 
             const encodedCredentials = btoa(this.id + ':' + this.password);
 
-            fetch('http://localhost:8080/login', {
+            fetch('login', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + encodedCredentials,
@@ -31,9 +31,9 @@ class ExpertLogin {
             })
                 .catch(error => console.error('Error:', error));
         }
-        else if (this.validateCredentials() == 1) alert("E nevoie să introduceți o parolă!");
-        else if (this.validateCredentials() == 2) alert("E nevoie să introduceți un ID!");
-        else alert("E nevoie să introduceți un ID si o parolă!");
+        else if (this.validateCredentials() == 1) alert("E nevoie sa introduceti o parola!");
+        else if (this.validateCredentials() == 2) alert("E nevoie sa introduceti un ID!");
+        else alert("E nevoie sa introduceti un ID si o parola!");
     }
 }
 

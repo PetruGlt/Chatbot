@@ -18,7 +18,7 @@ class ClientLogin {
             //Trimiterea credentialelor catre server
             const encodedCredentials = btoa(this.username + ':' + this.password);
 
-            fetch('http://localhost:8080/login', {
+            fetch('login', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + encodedCredentials,
@@ -31,9 +31,9 @@ class ClientLogin {
                 })
                 .catch(error => console.error('Error:', error));
         }
-        else if (this.validateCredentials() == 1) alert("E nevoie să introduceți o parolă!");
-        else if (this.validateCredentials() == 2) alert("E nevoie să introduceți un username!");
-        else alert("E nevoie să introduceți un username si o parolă!");
+        else if (this.validateCredentials() == 1) alert("E nevoie sa introduceti o parola!");
+        else if (this.validateCredentials() == 2) alert("E nevoie să introduceti un username!");
+        else alert("E nevoie sa introduceti un username si o parola!");
 
 
     }
