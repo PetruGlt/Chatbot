@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ChatbotService } from './chatbot.service';
+import { ChatbotService } from './chatbot.service'; 
 
 @Controller('chatbot')
 export class ChatbotController {
