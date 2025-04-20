@@ -72,7 +72,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
 
       - name: Debug Destination Path
-        run: echo "Deploying to path: ${{ secrets.DEPLOY_PATH }}"
+        run: echo "Deploying to path:${{ secrets.DEPLOY_PATH }}"
 
       - name: Deploy JAR to Server
         env:
