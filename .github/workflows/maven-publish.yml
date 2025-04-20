@@ -35,7 +35,7 @@ jobs:
 
       - name: Debug Build Output
         run: |
-          echo "Listing the target directory:"
+          echo "Checking the build output directory:"
           ls -R SpringTest1/demo/target
 
       - name: Upload Artifact
@@ -43,6 +43,9 @@ jobs:
         with:
           name: application-jar
           path: SpringTest1/demo/target/*.jar
+
+      - name: Debug Artifact Upload
+        run: echo "Artifact 'application-jar' uploaded successfully."
 
   deploy:
     name: Deploy to Server
@@ -55,10 +58,13 @@ jobs:
         with:
           name: application-jar
 
-      # - name: Debug Downloaded Artifact
-      #   run: |
-      #     echo "Listing the downloaded artifact directory:"
-      #     ls -R application-jar
+      - name: Debug Artifact Download
+        run: echo "Downloading artifact named: application-jar"
+
+      - name: Debug Downloaded Artifact
+        run: |
+          echo "Checking the downloaded artifact directory:"
+          ls -R application-jar
 
       - name: Deploy JAR to Server
         env:
@@ -67,6 +73,6 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           echo "Transferring JAR to the server..."
-          scp SpringTest1/demo/target/application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+          scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
           echo "Running the JAR on the server..."
           ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar $DEPLOY_PATH/$(ls -t $DEPLOY_PATH/*.jar | head -n 1)"
