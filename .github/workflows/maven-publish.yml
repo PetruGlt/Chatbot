@@ -20,7 +20,7 @@ jobs:
 
     - name: Build with Maven
       run: |
-      cd Chatbot/SpringTest1/demo
+      cd SpringTest1/demo
       mvn clean package -DskipTests
 
     - name: Copy JAR to server via SCP
