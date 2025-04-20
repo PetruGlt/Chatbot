@@ -59,7 +59,7 @@ jobs:
           name: application-jar
 
       - name: Debug Artifact Download
-        run: echo "Downloading artifact named: application-jar"
+        run: echo "Downloading artifact"
 
       - name: Debug Downloaded Artifact
         run: |
@@ -70,7 +70,7 @@ jobs:
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PATH: $ {{ secrets.DEPLOY_PATH }}
         run: |
           echo "Transferring JAR to the server..."
           scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
