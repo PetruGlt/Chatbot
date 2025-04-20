@@ -17,8 +17,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Options: adopt, zulu, temurin, etc.
-          java-version: '17' # Specify your Java version
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Cache Maven Repository
         uses: actions/cache@v3
@@ -45,7 +45,7 @@ jobs:
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
-    needs: build # Ensures this job runs after 'build'
+    needs: build
 
     steps:
       - name: Download Build Artifact
@@ -53,12 +53,14 @@ jobs:
         with:
           name: application-jar
 
+      - name: Debug Downloaded Artifact
+        run: ls -R application-jar
+
       - name: Deploy JAR to Server
-      
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          scp SpringTest1/demo/target/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+          scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
           ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar $DEPLOY_PATH/$(ls -t $DEPLOY_PATH/*.jar | head -n 1)"
