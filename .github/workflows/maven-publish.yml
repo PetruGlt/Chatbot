@@ -34,21 +34,13 @@ jobs:
           mvn clean package -DskipTests
 
       - name: Debug Build Output
-        run: |
-          echo "Checking contents of SpringTest1/demo/target/"
-          ls -R SpringTest1/demo/target
+        run: ls -R SpringTest1/demo/target
 
       - name: Upload Artifact
-        if: success()  # Ensures artifact upload only runs if previous steps succeeded
         uses: actions/upload-artifact@v4
         with:
           name: application-jar
           path: SpringTest1/demo/target/*.jar
-
-  deploy:
-    steps:
-      - name: Debug Build Artifact Name
-        run: echo "Downloading artifact named: application-jar"
 
   deploy:
     name: Deploy to Server
