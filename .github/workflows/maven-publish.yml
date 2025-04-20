@@ -33,11 +33,14 @@ jobs:
           cd SpringTest1/demo
           mvn clean package -DskipTests
 
+      - name: Debug Build Output
+        run: ls -R SpringTest1/demo/target
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: application-jar
-          path: target/*.jar
+          path: SpringTest1/demo/target/*.jar
 
   deploy:
     name: Deploy to Server
