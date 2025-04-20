@@ -54,12 +54,25 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: application-jar
-          path: application-jar  # Set a custom path for the artifact
+          path: application-jar
 
       - name: Debug Downloaded Artifact
         run: |
-          echo "Checking the contents of the downloaded artifact directory:"
+          echo "Checking the downloaded artifact directory:"
           ls -R application-jar
+
+      - name: Set Up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add Server to Known Hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER }} "echo 'SSH Connection Successful'"
 
       - name: Deploy JAR to Server
         env:
