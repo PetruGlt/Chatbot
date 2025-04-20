@@ -82,4 +82,15 @@ jobs:
         run: |
           echo "Transferring JAR to the server..."
           scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+          
           echo "Deployed successfully!"
+
+      - name: Run JAR File on Server
+        env:
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ~/Chatbot/SpringTest1/demo/target
+        run: |
+          echo "Running the JAR file on the server..."
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "cd $DEPLOY_PATH && java -jar $(ls -t *.jar | head -n 1)"
+          echo "JAR file executed successfully!"
