@@ -34,7 +34,9 @@ jobs:
           mvn clean package -DskipTests
 
       - name: Debug Build Output
-        run: ls -R SpringTest1/demo/target
+        run: |
+          echo "Listing the target directory:"
+          ls -R SpringTest1/demo/target
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -54,7 +56,9 @@ jobs:
           name: application-jar
 
       - name: Debug Downloaded Artifact
-        run: ls -R application-jar
+        run: |
+          echo "Listing the downloaded artifact directory:"
+          ls -R application-jar
 
       - name: Deploy JAR to Server
         env:
@@ -62,5 +66,7 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
+          echo "Transferring JAR to the server..."
           scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+          echo "Running the JAR on the server..."
           ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar $DEPLOY_PATH/$(ls -t $DEPLOY_PATH/*.jar | head -n 1)"
