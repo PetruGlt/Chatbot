@@ -44,9 +44,6 @@ jobs:
           name: application-jar
           path: SpringTest1/demo/target/*.jar
 
-      - name: Debug Artifact Upload
-        run: echo "Artifact 'application-jar' uploaded successfully."
-
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
@@ -57,20 +54,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: application-jar
-
-      - name: Debug Artifact Download
-        run: echo "Downloading artifact"
+          path: application-jar  # Set a custom path for the artifact
 
       - name: Debug Downloaded Artifact
         run: |
-          echo "Checking the downloaded artifact directory:"
+          echo "Checking the contents of the downloaded artifact directory:"
           ls -R application-jar
 
       - name: Deploy JAR to Server
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: $ {{ secrets.DEPLOY_PATH }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           echo "Transferring JAR to the server..."
           scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
