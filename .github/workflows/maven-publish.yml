@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger the workflow on pushes to the main branch
+      - main
 
 jobs:
   build:
@@ -71,8 +71,8 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
 
-      - name: Test SSH Connection
-        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SERVER }} "echo 'SSH Connection Successful'"
+      - name: Debug Destination Path
+        run: echo "Deploying to path: ${{ secrets.DEPLOY_PATH }}"
 
       - name: Deploy JAR to Server
         env:
@@ -82,5 +82,4 @@ jobs:
         run: |
           echo "Transferring JAR to the server..."
           scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
-          echo "Running the JAR on the server..."
-          ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar $DEPLOY_PATH/$(ls -t $DEPLOY_PATH/*.jar | head -n 1)"
+          echo "Deployed successfully!"
