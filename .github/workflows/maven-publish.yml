@@ -54,10 +54,11 @@ jobs:
           name: application-jar
 
       - name: Deploy JAR to Server
+      
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          scp application-jar/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+          scp SpringTest1/demo/target/*.jar $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
           ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar $DEPLOY_PATH/$(ls -t $DEPLOY_PATH/*.jar | head -n 1)"
