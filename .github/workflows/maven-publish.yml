@@ -31,7 +31,7 @@ jobs:
       - name: Build with Maven
         run: |
           cd SpringTest1/demo
-          mvn clean package -DskipTests
+          mvn clean package 
 
       - name: Debug Build Output
         run: |
