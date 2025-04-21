@@ -97,3 +97,21 @@ jobs:
 
           ssh $DEPLOY_USER@$DEPLOY_SERVER "nohup java -jar $DEPLOY_PATH/demo-0.0.1-SNAPSHOT.jar > $DEPLOY_PATH/app.log 2>&1 &"
           echo "JAR file started successfully in the background!"
+
+      - name: Send Notification to Discord (Success)
+        if: success()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{"content": "✅ CI/CD Pipeline succeeded for the `main` branch. The application has been deployed and is running successfully!"}' \
+            $DISCORD_WEBHOOK_URL
+
+      - name: Send Notification to Discord (Failure)
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d '{"content": "❌ CI/CD Pipeline failed for the `main` branch. Please check the logs for details."}' \
+            $DISCORD_WEBHOOK_URL
