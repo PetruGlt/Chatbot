@@ -89,8 +89,11 @@ jobs:
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: ~/Chatbot/SpringTest1/demo/target
+          DEPLOY_PATH: Chatbot/SpringTest1/demo/target
         run: |
           echo "Running the JAR file on the server..."
-          ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar Chatbot/SpringTest1/demo/target/demo-0.0.1-SNAPSHOT.jar"
-          echo "JAR file executed successfully!"
+          # ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar Chatbot/SpringTest1/demo/target/demo-0.0.1-SNAPSHOT.jar"
+          # echo "JAR file executed successfully!"
+
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "nohup java -jar $DEPLOY_PATH/demo-0.0.1-SNAPSHOT.jar > $DEPLOY_PATH/app.log 2>&1 &"
+          echo "JAR file started successfully in the background!"
