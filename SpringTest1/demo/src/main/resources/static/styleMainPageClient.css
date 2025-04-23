@@ -1,0 +1,99 @@
+/* Layout remains the same */
+.container {
+    display: grid;
+    grid-template-areas:
+        "sidebar content";
+    grid-template-columns: 1fr 3fr;
+    gap: 20px;
+    height: 100vh; /* Make full height */
+    font-family: sans-serif;
+}
+
+/* Sidebar stays on the left */
+aside {
+    grid-area: sidebar;
+    border-right: 1px solid rebeccapurple;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+/* Chat area on the right */
+main {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Header */
+header {
+    padding: 10px;
+    background-color: rebeccapurple;
+    color: whitesmoke;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Conversation area scrollable */
+.conversation {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#welcome {
+    transition: opacity 0.5s ease;
+}
+
+#welcome.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Input bar stays at bottom of main */
+.input-bar {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid rebeccapurple;
+    background: white;
+}
+
+.input-bar input {
+    flex-grow: 1;
+    padding: 8px;
+}
+
+.input-bar button {
+    padding: 8px 16px;
+    background-color: rebeccapurple;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Message styling */
+.message {
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    word-wrap: break-word;
+}
+
+.message.question {
+    align-self: flex-end;
+    background-color: #d9c7f3;
+    text-align: right;
+}
+
+.message.answer {
+    align-self: flex-start;
+    background-color: #f4f0fa;
+    text-align: left;
+}
