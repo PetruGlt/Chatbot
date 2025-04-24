@@ -4,15 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Chatbot for Banking Assistance - Main Page</title>
+
+    <!--    aici trebuie schimbat pathul !! -->
+    <link href="./../static/styleMainPageClient.css" rel="stylesheet" type="text/css">
+    <script src="./../static/mainPageClient.js"></script>
 </head>
 
 <body>
+<div class="container">
 
-<div>
-    <h2>You have logged in.</h2>
+    <main>
+        <header id="welcome">What can I help you with?</header>
 
+        <main class="conversation" id="chatBox">
+            <!-- Questions and responses will be added here -->
+        </main>
+        <div class = "input-bar">
+            <input type="text" id="questionInput" placeholder="Ask a question...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </main>
+
+    <aside>
+        <button id="newConversation">Start A New Conversation</button>
+        <button id="history">Chat History</button>
+        <button id="logout">Logout</button>
+    </aside>
 </div>
+
 
 </body>
 
+
 </html>
+
+

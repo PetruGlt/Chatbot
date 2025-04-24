@@ -26,6 +26,7 @@ class ClientLogin {
                 },
             }).then(response => {
                     if (response.redirected) {
+                        sessionStorage.setItem("username", this.username);
                         window.location.href = response.url;
                     }
                 })
