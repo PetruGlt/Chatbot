@@ -23,7 +23,7 @@ public class MessageController {
             @RequestParam("conversationId") String conversationId) {
 
 
-        return messageService.sendQuestion(question);
+        return messageService.sendQuestion(question, username);
     }
 
 
