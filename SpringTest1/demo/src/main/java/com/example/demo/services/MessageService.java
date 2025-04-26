@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriUtils;
 
+import java.util.List;
+import java.util.Random;
+
 @Service
 public class MessageService {
 
@@ -33,7 +36,7 @@ public class MessageService {
         // Trimite un raspuns
         String response = responseService.getResponse();
 
-        // salvare mysql
+
         Conversation conversation = new Conversation();
         conversation.setQuestion(question);
         conversation.setAnswer(response);
@@ -43,5 +46,10 @@ public class MessageService {
 
         return response;
 
+    }
+
+    // functie care preia din tabela messajele cu conversationId
+    public List<Conversation> getConversations(Integer conversationId) {
+        return conversationRepository.findByConversationId(conversationId);
     }
 }

@@ -54,4 +54,15 @@ public class Conversation {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Conversation{" +
+                "id=" + id +
+                ", conversationId='" + conversationId + '\'' +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                ", user='" + user + '\'' +
+                '}';
+    }
 }
