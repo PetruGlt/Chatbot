@@ -1,0 +1,54 @@
+.container {
+    display: grid;
+    grid-template-areas: "sidebar content";
+    grid-template-columns: 1fr 3fr;
+    gap: 20px;
+    height: 100vh;
+    font-family: sans-serif;
+}
+
+aside {
+    grid-area: sidebar;
+    border-right: 1px solid rebeccapurple;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+main {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+header {
+    padding: 10px;
+    background-color: rebeccapurple;
+    color: whitesmoke;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.conversation-card {
+    flex: 0 0 30%;
+    background-color: #f4f0fa;
+    border: 1px solid rebeccapurple;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.conversation-card:hover {
+    background-color: #e0d4f7;
+}
