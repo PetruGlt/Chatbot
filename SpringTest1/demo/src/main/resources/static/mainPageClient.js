@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //trimitem un json
         //asteptam un json
 
-        fetch('/ask', {
+        fetch('ask', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

@@ -2,6 +2,9 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
+
 @Table(name = "conversation_history")
 @Entity
 public class Conversation {
@@ -20,7 +23,6 @@ public class Conversation {
 
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
-
 
     public String getQuestion() {
         return question;
