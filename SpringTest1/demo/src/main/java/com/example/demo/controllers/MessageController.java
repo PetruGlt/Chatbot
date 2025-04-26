@@ -21,7 +21,7 @@ public class MessageController {
     @PostMapping("/ask")
     @ResponseBody//Frontul trimite si asteapta JSON
     public Map<String, String> sendMessage(@RequestBody QuestionObject dto) {
-        String answer = messageService.sendQuestion(dto.question, dto.username);
+        String answer = messageService.sendQuestion(dto.question, dto.username, dto.conversationId);
         // Returnam un obiect Json: { "answer": "Hello!" }
         return Map.of("answer", answer);
     }
