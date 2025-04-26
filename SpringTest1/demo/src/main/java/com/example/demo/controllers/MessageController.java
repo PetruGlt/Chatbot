@@ -1,12 +1,14 @@
 package com.example.demo.controllers;
 
+import com.example.demo.models.Conversation;
 import com.example.demo.models.QuestionObject;
 import com.example.demo.services.MessageService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -25,6 +27,31 @@ public class MessageController {
         // Returnam un obiect Json: { "answer": "Hello!" }
         return Map.of("answer", answer);
     }
+
+    @GetMapping("/chat-history")
+    @ResponseBody
+    public Map<String, List<Map<String, Object>>> getChatHistory(@RequestParam Integer conversationId) { // conversationId este introdus in query
+        // url example : /chat-history?conversationId=1
+
+        // preluam toate messajele cu conversationId
+        List<Conversation> conversationList = messageService.getConversations(conversationId);
+
+        // construim o lista cu obiecte de tip json
+        List<Map<String, Object>> chatList = new ArrayList<>();
+        for (Conversation conversation : conversationList) {
+            Map<String, Object> chatEntry = new HashMap<>();
+            chatEntry.put("conversationId", conversation.getConversationId());
+            chatEntry.put("question", conversation.getQuestion());
+            chatEntry.put("answer", conversation.getAnswer());
+            chatList.add(chatEntry);
+        }
+
+        System.out.println(conversationList);
+        return Map.of("chat-history", chatList);
+    }
+
+
+
 //    public String sendMessage(
 //            @RequestParam("question") String question,
 //            @RequestParam("username") String username,
