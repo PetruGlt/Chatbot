@@ -1,7 +1,6 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Table(name = "conversation_history")
 @Entity
@@ -10,13 +9,18 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user", nullable = false, columnDefinition = "TEXT")
+    private String user;
+
+    @Column(name = "conversation_id", nullable = false, columnDefinition = "INTEGER")
+    private Integer conversationId;
+
+    @Column(name = "question", nullable = false, columnDefinition = "TEXT")
     private String question;
 
-    @Column(nullable = false)
-    private String response;
+    @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
+    private String answer;
 
-    private String username;
 
     public String getQuestion() {
         return question;
@@ -24,17 +28,23 @@ public class Conversation {
     public void setQuestion(String question) {
         this.question = question;
     }
-    public String getResponse() {
-        return response;
+    public String getAnswer() {
+        return answer;
     }
-    public void setResponse(String response) {
-        this.response = response;
+    public Integer getConversationId() {
+        return conversationId;
     }
-    public String getUsername() {
-        return username;
+    public void setConversationId(Integer conversationId) {
+        this.conversationId = conversationId;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAnswer(String response) {
+        this.answer = response;
+    }
+    public String getUser() {
+        return user;
+    }
+    public void setUser(String username) {
+        this.user = username;
     }
     public Long getId() {
         return id;

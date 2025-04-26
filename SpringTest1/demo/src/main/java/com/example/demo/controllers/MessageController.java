@@ -19,11 +19,9 @@ public class MessageController {
     @ResponseBody
     public String sendMessage(
             @RequestParam("question") String question,
-            @RequestParam("username") String username,
-            @RequestParam("conversationId") String conversationId) {
-
-
-        return messageService.sendQuestion(question, username);
+            @RequestParam("user") String user,
+            @RequestParam("conversation_id") Integer conversationId) {
+        return messageService.sendQuestion(question, user, conversationId);
     }
 
 

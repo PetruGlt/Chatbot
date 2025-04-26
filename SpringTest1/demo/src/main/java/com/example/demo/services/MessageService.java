@@ -19,7 +19,7 @@ public class MessageService {
         this.webClient = WebClient.create("http://localhost:3000"); // baza URL
     }
 
-    public String sendQuestion(String question, String username) {
+    public String sendQuestion(String question, String username, Integer conversationId) {
         // Trimite întrebarea la API
     /*    String encoded = UriUtils.encodeQueryParam(question, StandardCharsets.UTF_8);
         String uri = "/chatbot/ask?question=" + encoded;
@@ -36,8 +36,9 @@ public class MessageService {
         // salvare mysql
         Conversation conversation = new Conversation();
         conversation.setQuestion(question);
-        conversation.setResponse(response);
-        conversation.setUsername(username);
+        conversation.setAnswer(response);
+        conversation.setConversationId(conversationId);
+        conversation.setUser(username);
         conversationRepository.save(conversation);
 
         return response;
