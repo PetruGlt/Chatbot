@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = sessionStorage.getItem("username");
 
 
-    //partea asta trebuie comentata daca se testeaza individual pagina aceasta, fara logare
-    // if (!username) {
-    //     //window.location.href = "./../templates/client.html";
-    //     window.location.href = "client.html";   //path!!!
-    //     return;
-    // }
-    //pana aici
+    // partea asta trebuie comentata daca se testeaza individual pagina aceasta, fara logare
+    if (!username) {
+        //window.location.href = "./../templates/client.html";
+        window.location.href = "/login";   //path!!!//Pentru a actica GetMapping controlleru
+        return;
+    }
+    // pana aici
 
 
 
@@ -44,8 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //end doar pentru testare
 
-
-    fetch('history', {
+    fetch('chatHistory', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -100,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     historyBtn.addEventListener("click", () => {
-        window.location.href = "historyPage.html";            //path!!
+        window.location.href = "/showHistory";           //path!!
     });
 
     logoutBtn.addEventListener("click", () => {
