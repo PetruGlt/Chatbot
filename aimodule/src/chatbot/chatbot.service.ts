@@ -20,10 +20,26 @@ export class ChatbotService {
     }
 
     private async sendPrompt(prompt) {
-        const response = await this.apiClient.models.generateContent({
+        const chat = await this.apiClient.chats.create({
             model: this.configService.get("GOOGLE_AI_MODEL"),
-            contents: prompt,
+            history: [
+                {
+                    role: "user",
+                    parts: [{ text: "Există un comision pentru deschiderea unui cont curent?" }],
+                },
+                {
+                    role: "model",
+                    parts: [{ text: "În general, nu se percepe un comision de deschidere pentru conturile curente. Totuși, pot exista cazuri speciale în care se aplică o taxă. E important să verifici tarifele actualizate direct pe site-ul băncii pentru a fi la curent cu costurile." }],
+                },
+            ],
         });
-        return response.candidates[0].content.parts[0].text;
+
+        const response = await chat.sendMessage({
+            message: prompt
+        });
+
+        const output = response.candidates[0].content.parts.map(obj => obj.text).join('');
+        
+        return output;
     }
 }
