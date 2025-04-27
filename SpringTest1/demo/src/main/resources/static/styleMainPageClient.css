@@ -1,3 +1,10 @@
+body {
+    background: linear-gradient(135deg, #3b3a30, #232727);
+    margin: 0;
+    overflow: hidden; 
+    height: 100vh;
+}
+
 /* Layout remains the same */
 .container {
     display: grid;
@@ -5,18 +12,77 @@
         "sidebar content";
     grid-template-columns: 1fr 3fr;
     gap: 20px;
-    height: 100vh; /* Make full height */
+    height: 100vh; 
+    width: 100vw;
     font-family: sans-serif;
+    box-sizing: border-box;
+
 }
 
 /* Sidebar stays on the left */
 aside {
+    width: 350px;
+    justify-content: center;
     grid-area: sidebar;
-    border-right: 1px solid rebeccapurple;
+    border-right: 1px solid #405d27;
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 20px;
+
+    overflow: hidden;
+}
+
+#newConversation{
+    background: transparent;
+    color: #8aa277;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
+
+#history{
+    background: transparent;
+    color: #405d27;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#logout{
+    background: transparent;
+    color: #405d27;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#history:hover{
+    transition-timing-function: ease-in-out;
+    transition: color 0.2s;
+    color: #8aa277;
+}
+#logout:hover{
+    transition-timing-function: ease-in-out;
+    transition: color 0.2s;
+    color: #8aa277;
 }
 
 /* Chat area on the right */
@@ -25,25 +91,36 @@ main {
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Header */
 header {
     padding: 10px;
-    background-color: rebeccapurple;
-    color: whitesmoke;
+    background-color: transparent;
+    color: #8aa277;
     text-align: center;
-    border-radius: 5px;
+    font-size: 50px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    margin-bottom: 20px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
 }
 
 /* Conversation area scrollable */
 .conversation {
     flex: 1;
-    overflow-y: auto;
+    overflow: auto;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    scroll-behavior: smooth;
 }
 
 #welcome {
@@ -60,22 +137,34 @@ header {
     display: flex;
     gap: 10px;
     padding: 10px;
-    border-top: 1px solid rebeccapurple;
-    background: white;
+    border-top: 1px solid #405d27;
+    background: transparent;
+    height: 60px;
 }
 
 .input-bar input {
     flex-grow: 1;
-    padding: 8px;
+    padding: 12px;
+    border: 1px solid #405d27;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
 }
 
 .input-bar button {
-    padding: 8px 16px;
-    background-color: rebeccapurple;
+    padding: 12px 20px;
+    background-color: #8aa277;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.input-bar button:hover {
+    background-color: #405d27;
 }
 
 /* Message styling */
@@ -84,16 +173,17 @@ header {
     padding: 10px;
     border-radius: 8px;
     word-wrap: break-word;
+    color: white;
 }
 
 .message.question {
     align-self: flex-end;
-    background-color: #d9c7f3;
+    background-color: #405d27;
     text-align: right;
 }
 
 .message.answer {
     align-self: flex-start;
-    background-color: #f4f0fa;
+    background-color: rgba(255, 255, 255, 0.1);
     text-align: left;
 }

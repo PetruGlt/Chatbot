@@ -1,3 +1,10 @@
+body {
+    background: linear-gradient(135deg, #3b3a30, #232727);
+    margin: 0;
+    overflow: hidden; 
+    height: 100vh;
+}
+
 .container {
     display: grid;
     grid-template-areas: "sidebar content";
@@ -8,12 +15,66 @@
 }
 
 aside {
+    width: 350px;
+    justify-content: center;
     grid-area: sidebar;
-    border-right: 1px solid rebeccapurple;
+    border-right: 1px solid #405d27;
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 20px;
+}
+
+#newConversation{
+    background: transparent;
+    color: #405d27;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
+
+#history{
+    background: transparent;
+    color: #8aa277;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#logout{
+    background: transparent;
+    color: #405d27;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#newConversation:hover{
+    transition-timing-function: ease-in-out;
+    transition: color 0.2s;
+    color: #8aa277;
+}
+#logout:hover{
+    transition-timing-function: ease-in-out;
+    transition: color 0.2s;
+    color: #8aa277;
 }
 
 main {
@@ -25,9 +86,12 @@ main {
 
 header {
     padding: 10px;
-    background-color: rebeccapurple;
-    color: whitesmoke;
+    background-color: transparent;
+    color: #8aa277;
     text-align: center;
+    font-size: 50px;
+    font-family: 'Verdana';
+    font-weight: bold;
     border-radius: 5px;
     margin-bottom: 20px;
 }
@@ -41,14 +105,16 @@ header {
 
 .conversation-card {
     flex: 0 0 30%;
-    background-color: #f4f0fa;
-    border: 1px solid rebeccapurple;
+    color: #8aa277;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #405d27;
     border-radius: 8px;
     padding: 10px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background-color 0.3s;
 }
 
 .conversation-card:hover {
-    background-color: #e0d4f7;
+    transition: background-color 0.3s;
+    background-color: rgba(255, 255, 255, 0.05);
 }
