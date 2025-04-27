@@ -28,7 +28,12 @@ public class MessageController {
         return Map.of("answer", answer);
     }
 
-    @GetMapping("/chat-history")
+    @GetMapping("/showHistory")
+    public String showHistory() {
+        return "historyPage";
+    }
+
+    @PostMapping("/chatHistory")
     @ResponseBody
     public Map<String, List<Map<String, Object>>> getChatHistory(@RequestParam Integer conversationId) { // conversationId este introdus in query
         // url example : /chat-history?conversationId=1
@@ -47,7 +52,7 @@ public class MessageController {
         }
 
         System.out.println(conversationList);
-        return Map.of("chat-history", chatList);
+        return Map.of("chatHistory", chatList);
     }
 
 
