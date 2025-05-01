@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("conversationId");
-        window.location.href = "./../templates/client.html"; //aici trebuie schimbat pathul!!
+        window.location.href = "/login"; //aici trebuie schimbat pathul!!
     })
 
     newConversationBtn.addEventListener("click", () => {
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     historyBtn.addEventListener("click", () => {
-        window.location.href = "./historyPage.html";  //aici trebuie schimbat pathul!!
+        window.location.href = "/showHistory";
     })
 
     function sendQuestion(questionText) {

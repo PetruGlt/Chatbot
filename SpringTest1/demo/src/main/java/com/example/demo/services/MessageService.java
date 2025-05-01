@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriUtils;
 
+import java.util.List;
+import java.util.Random;
+
 @Service
 public class MessageService {
 
@@ -19,7 +22,7 @@ public class MessageService {
         this.webClient = WebClient.create("http://localhost:3000"); // baza URL
     }
 
-    public String sendQuestion(String question, String username) {
+    public String sendQuestion(String question, String username, Integer conversationId) {
         // Trimite întrebarea la API
     /*    String encoded = UriUtils.encodeQueryParam(question, StandardCharsets.UTF_8);
         String uri = "/chatbot/ask?question=" + encoded;
@@ -33,14 +36,20 @@ public class MessageService {
         // Trimite un raspuns
         String response = responseService.getResponse();
 
-        // salvare mysql
+
         Conversation conversation = new Conversation();
         conversation.setQuestion(question);
-        conversation.setResponse(response);
-        conversation.setUsername(username);
+        conversation.setAnswer(response);
+        conversation.setConversationId(conversationId);
+        conversation.setUser(username);
         conversationRepository.save(conversation);
 
         return response;
 
+    }
+
+    // functie care preia din tabela messajele cu conversationId
+    public List<Conversation> getConversations(Integer conversationId) {
+        return conversationRepository.findByConversationId(conversationId);
     }
 }
