@@ -35,7 +35,7 @@ public class MessageController {
 
 
     @GetMapping("/mainPageClient")
-    public String showHistory() {
+    public String showMainPage() {
         return "MainPage";
     }
 
