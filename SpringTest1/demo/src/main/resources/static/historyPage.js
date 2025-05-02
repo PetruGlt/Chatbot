@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     newConversationBtn.addEventListener("click", () => {
         let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
         sessionStorage.setItem("conversationId", (currentId + 1).toString());
-        window.location.href = "MainPage.html";                 //path!!
+        window.location.href = "/mainPageClient";                 //path!!
     });
 
     historyBtn.addEventListener("click", () => {
@@ -106,6 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("conversationId");
         //window.location.href = "./../templates/client.html";
-        window.location.href = "client.html";                   //path!!!!!
+        window.location.href = "/login";                   //path!!!!!
     });
 });
