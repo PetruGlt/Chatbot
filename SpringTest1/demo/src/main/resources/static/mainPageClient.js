@@ -1,4 +1,3 @@
-
 //am pus un comentariu in dreptul liniilor unde path ul ar trebui schimbat!
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let hasSentFirstMessage = false;
 
-    sendBtn.addEventListener("click", () => {
+    function handleSend() {
         const question = questionInput.value.trim();
         if (!question) return;
 
@@ -31,6 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         sendQuestion(question);
         questionInput.value = "";
+    }
+
+
+    sendBtn.addEventListener("click", handleSend);
+
+    questionInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleSend();
+        }
     });
 
     logoutBtn.addEventListener("click", () => {
@@ -43,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
         sessionStorage.setItem("conversationId", (currentId + 1).toString());
 
-        window.location.href = "./MainPage.html";  //aici trebuie schimbat pathul!!
+        window.location.href = "/mainPageClient";  //aici trebuie schimbat pathul!!
     })
 
     historyBtn.addEventListener("click", () => {
@@ -103,8 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 answerEl.textContent = "A: Sorry, there was an error getting the response.";
             });
     }
-
-
 
     //asta e doar de test
     //     console.log(question);

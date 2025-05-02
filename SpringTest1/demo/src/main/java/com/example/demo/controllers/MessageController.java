@@ -33,6 +33,12 @@ public class MessageController {
         return "historyPage";
     }
 
+
+    @GetMapping("/mainPageClient")
+    public String showHistory() {
+        return "MainPage";
+    }
+
     @PostMapping("/chatHistory")
     @ResponseBody
     public Map<String, List<Map<String, Object>>> getChatHistory(@RequestParam Integer conversationId) { // conversationId este introdus in query
