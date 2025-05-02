@@ -33,6 +33,7 @@ public class MessageController {
         return "historyPage";
     }
 
+
     @GetMapping("/mainPageClient")
     public String showHistory() {
         return "MainPage";

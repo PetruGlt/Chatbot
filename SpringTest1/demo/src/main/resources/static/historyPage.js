@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
     newConversationBtn.addEventListener("click", () => {
         let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
         sessionStorage.setItem("conversationId", (currentId + 1).toString());

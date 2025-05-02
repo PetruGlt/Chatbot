@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         questionInput.value = "";
     }
 
+
     sendBtn.addEventListener("click", handleSend);
 
     questionInput.addEventListener("keydown", (e) => {
