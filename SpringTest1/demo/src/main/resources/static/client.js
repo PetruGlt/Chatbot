@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+
     // TODO:
     const toggleRegisterButton = document.getElementById("toggleRegister");
     const registerFormContainer = document.getElementById("registerFormContainer");
