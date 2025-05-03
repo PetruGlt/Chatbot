@@ -25,11 +25,11 @@ class ClientLogin {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
             }).then(response => {
-                    if (response.redirected) {
-                        sessionStorage.setItem("username", this.username);
-                        window.location.href = response.url;
-                    }
-                })
+                if (response.redirected) {
+                    sessionStorage.setItem("username", this.username);
+                    window.location.href = response.url;
+                }
+            })
                 .catch(error => console.error('Error:', error));
         }
         else if (this.validateCredentials() == 1) alert("E nevoie sa introduceti o parola!");
@@ -60,6 +60,45 @@ document.addEventListener("DOMContentLoaded", () => {
     if (expertRadio) {
         expertRadio.addEventListener("change", () => {
             window.location.href = "/expert";
+        });
+    }
+
+    if (registerToggleButton) {
+        registerToggleButton.addEventListener("click", () => {
+            if (registerFormContainer) {
+                registerFormContainer.style.display =
+                    registerFormContainer.style.display === "none" || !registerFormContainer.style.display
+                        ? "block"
+                        : "none";
+            }
+        });
+    }
+
+    if (submitRegisterButton) {
+        submitRegisterButton.addEventListener("click", () => {
+            const username = document.getElementById("regUsername").value.trim();
+            const password = document.getElementById("regPassword").value.trim();
+            const accountType = document.querySelector('input[name="accountType"]:checked').value;
+
+            if (!username || !password) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, accountType })
+            }).then(response => {
+                if (response.ok) {
+                    alert("Registration successful! You can now log in.");
+                    registerFormContainer.style.display = "none";
+                } else {
+                    response.text().then(text => alert("Registration failed: " + text));
+                }
+            }).catch(error => console.error('Error:', error));
         });
     }
 
