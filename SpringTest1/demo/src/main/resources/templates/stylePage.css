@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Verdana', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #3b3a30, #232727);
+}
+
+.container {
+    background: rgba(64, 60, 55, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 500px;
+    border: 1px solid rgba(187, 171, 155, 0.3);
+}
+
+h2 {
+    color: #405d27;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.registerFormContainer {
+
+        color: #405d27;
+        font-size: 30px;
+        margin-bottom: 15px;
+
+}
+.radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 10px;
+}
+
+.radio-group label {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #8aa277;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 8px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+button {
+    background: #405d27;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+
+}
+
+button:hover {
+    background: #2c3f1b;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 350px;
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .radio-group label {
+        font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
