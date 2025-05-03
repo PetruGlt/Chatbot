@@ -5,3 +5,8 @@ conversation_id INT NOT NULL,
 question TEXT NOT NULL,
 answer TEXT NOT NULL
 );
+
+ALTER TABLE conversation_history
+ADD COLUMN updated_response TEXT,
+ADD COLUMN extra_help TEXT,
+ADD COLUMN checked BOOLEAN DEFAULT FALSE;
