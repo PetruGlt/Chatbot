@@ -63,43 +63,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    if (registerToggleButton) {
-        registerToggleButton.addEventListener("click", () => {
-            if (registerFormContainer) {
-                registerFormContainer.style.display =
-                    registerFormContainer.style.display === "none" || !registerFormContainer.style.display
-                        ? "block"
-                        : "none";
+    // TODO:
+    const toggleRegisterButton = document.getElementById("toggleRegister");
+    const registerFormContainer = document.getElementById("registerFormContainer");
+
+    if (toggleRegisterButton && registerFormContainer) {
+        toggleRegisterButton.addEventListener("click", () => {
+            const currentDisplay = window.getComputedStyle(registerFormContainer).display;
+            if (currentDisplay === "none") {
+                registerFormContainer.style.display = "block";
+                toggleRegisterButton.textContent = "Hide Registration Form";
+            } else {
+                registerFormContainer.style.display = "none";
+                toggleRegisterButton.textContent = "Register";
             }
         });
     }
 
-    if (submitRegisterButton) {
-        submitRegisterButton.addEventListener("click", () => {
-            const username = document.getElementById("regUsername").value.trim();
-            const password = document.getElementById("regPassword").value.trim();
-            const accountType = document.querySelector('input[name="accountType"]:checked').value;
 
-            if (!username || !password) {
-                alert("Please fill in all fields.");
-                return;
-            }
+    const submitRegisterButton = document.getElementById("submitRegister");
 
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password, accountType })
-            }).then(response => {
-                if (response.ok) {
-                    alert("Registration successful! You can now log in.");
-                    registerFormContainer.style.display = "none";
-                } else {
-                    response.text().then(text => alert("Registration failed: " + text));
-                }
-            }).catch(error => console.error('Error:', error));
-        });
-    }
+    // TODO: submitButton
 
 });
