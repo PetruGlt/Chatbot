@@ -52,4 +52,10 @@ public class MessageService {
     public List<Conversation> getConversations(Integer conversationId) {
         return conversationRepository.findByConversationId(conversationId);
     }
+
+    // fuctie care ia intrebarile care au "checked" = false
+    public List<Conversation> getUncheckedQuestions() {
+        return conversationRepository.findByCheckedFalse();
+    }
+
 }

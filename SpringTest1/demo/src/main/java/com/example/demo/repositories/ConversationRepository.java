@@ -7,4 +7,6 @@ import java.util.List;
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
     List<Conversation> findByuser(String user);
     List<Conversation> findByConversationId(Integer conversationId);
+    List<Conversation> findByCheckedFalse();
+
 }
