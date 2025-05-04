@@ -2,7 +2,10 @@ package com.example.demo.controllers;
 
 import com.example.demo.models.Conversation;
 import com.example.demo.models.QuestionObject;
+import com.example.demo.models.User;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.MessageService;
+import com.example.demo.utils.ConversationSummaryDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,7 @@ import java.util.Map;
 
 @Controller
 public class MessageController {
+    UserRepository userRepository;
 
     public final MessageService messageService;
 
@@ -28,26 +32,38 @@ public class MessageController {
         return Map.of("answer", answer);
     }
 
-    @GetMapping("/chat-history")
+    @GetMapping("/showHistory")
+    public String showHistory() {
+        return "historyPage";
+    }
+
+
+    @GetMapping("/mainPageClient")
+    public String showMainPage() {
+        return "MainPage";
+    }
+
+    @PostMapping("/chatHistory")
     @ResponseBody
-    public Map<String, List<Map<String, Object>>> getChatHistory(@RequestParam Integer conversationId) { // conversationId este introdus in query
+    public List<Map<String, Object>>  getChatHistory(@RequestBody Map<String, String> requestBody) { // conversationId este introdus in query
         // url example : /chat-history?conversationId=1
 
+        String username = requestBody.get("username");
+
         // preluam toate messajele cu conversationId
-        List<Conversation> conversationList = messageService.getConversations(conversationId);
+        List<ConversationSummaryDTO> conversationList = messageService.getConversations(username);
 
         // construim o lista cu obiecte de tip json
         List<Map<String, Object>> chatList = new ArrayList<>();
-        for (Conversation conversation : conversationList) {
+        for (ConversationSummaryDTO dto : conversationList) {
             Map<String, Object> chatEntry = new HashMap<>();
-            chatEntry.put("conversationId", conversation.getConversationId());
-            chatEntry.put("question", conversation.getQuestion());
-            chatEntry.put("answer", conversation.getAnswer());
+            chatEntry.put("conversationId", dto.getConversationId());
+            chatEntry.put("firstQuestion", dto.getFirstQuestion());
+            chatEntry.put("firstAnswer", dto.getFirstAnswer());
             chatList.add(chatEntry);
         }
 
-        System.out.println(conversationList);
-        return Map.of("chat-history", chatList);
+        return chatList;
     }
 
 
