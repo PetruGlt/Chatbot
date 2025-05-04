@@ -14,8 +14,9 @@ import com.example.demo.utils.AccessLevel;
 @Entity
 public class User {
     @Id
+    @Column(unique = true, nullable = false)
     private String username; // Username-ul utilizatorului (cheie primară)
-
+    @Column(nullable = false)
     private String password; // Parola utilizatorului (ar trebui să fie stocată criptat, ex: BCrypt)
 
     @Enumerated(EnumType.STRING)
