@@ -1,12 +1,15 @@
 package com.example.demo.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import com.example.demo.utils.AccessLevel;
 /**
  * Modelul User reprezintă un utilizator în baza de date.
  */
+
+
+
+
 @Table(name = "users")
 @Entity
 public class User {
@@ -14,6 +17,10 @@ public class User {
     private String username; // Username-ul utilizatorului (cheie primară)
 
     private String password; // Parola utilizatorului (ar trebui să fie stocată criptat, ex: BCrypt)
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('USER','ADMIN')")
+    private AccessLevel access;
 
     // Getter pentru parola utilizatorului
     public String getPassword() {
@@ -33,6 +40,14 @@ public class User {
     // Setter pentru username
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public AccessLevel getAccess() {
+        return access;
+    }
+
+    public void setAccess(AccessLevel access) {
+        this.access = access;
     }
 
     // Metodă pentru afișarea informațiilor despre utilizator (debugging/logging)
