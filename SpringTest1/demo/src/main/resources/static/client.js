@@ -25,11 +25,11 @@ class ClientLogin {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
             }).then(response => {
-                    if (response.redirected) {
-                        sessionStorage.setItem("username", this.username);
-                        window.location.href = response.url;
-                    }
-                })
+                if (response.redirected) {
+                    sessionStorage.setItem("username", this.username);
+                    window.location.href = response.url;
+                }
+            })
                 .catch(error => console.error('Error:', error));
         }
         else if (this.validateCredentials() == 1) alert("E nevoie sa introduceti o parola!");
@@ -62,5 +62,28 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "/expert";
         });
     }
+
+
+    // TODO:
+    const toggleRegisterButton = document.getElementById("toggleRegister");
+    const registerFormContainer = document.getElementById("registerFormContainer");
+
+    if (toggleRegisterButton && registerFormContainer) {
+        toggleRegisterButton.addEventListener("click", () => {
+            const currentDisplay = window.getComputedStyle(registerFormContainer).display;
+            if (currentDisplay === "none") {
+                registerFormContainer.style.display = "block";
+                toggleRegisterButton.textContent = "Hide Registration Form";
+            } else {
+                registerFormContainer.style.display = "none";
+                toggleRegisterButton.textContent = "Register";
+            }
+        });
+    }
+
+
+    const submitRegisterButton = document.getElementById("submitRegister");
+
+    // TODO: submitButton
 
 });

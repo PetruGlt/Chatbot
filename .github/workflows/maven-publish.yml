@@ -91,10 +91,14 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PATH: Chatbot/SpringTest1/demo/target
         run: |
-          echo "Running the JAR file on the server..."
+          echo "Killing process running on port 8080 (if any)..."
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "lsof -ti:8080 | xargs --no-run-if-empty kill -9"
+
+          # echo "Running the JAR file on the server..."
           # ssh $DEPLOY_USER@$DEPLOY_SERVER "java -jar Chatbot/SpringTest1/demo/target/demo-0.0.1-SNAPSHOT.jar"
           # echo "JAR file executed successfully!"
 
+          echo "Starting the new JAR file in the background..."
           ssh $DEPLOY_USER@$DEPLOY_SERVER "nohup java -jar $DEPLOY_PATH/demo-0.0.1-SNAPSHOT.jar > $DEPLOY_PATH/app.log 2>&1 &"
           echo "JAR file started successfully in the background!"
 
