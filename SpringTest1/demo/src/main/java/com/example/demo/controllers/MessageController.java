@@ -66,6 +66,25 @@ public class MessageController {
         return chatList;
     }
 
+    @GetMapping("/questions")
+    @ResponseBody
+    public List<Map<String, Object>> getUncheckedQuestions() {
+        List<Conversation> unchecked = messageService.getUncheckedQuestions();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Conversation c : unchecked) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("question", c.getQuestion());
+            map.put("user", c.getUser());
+            map.put("conversationId", c.getConversationId());
+            result.add(map);
+        }
+
+        return result;
+    }
+
+
 
 
 //    public String sendMessage(

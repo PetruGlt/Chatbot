@@ -53,4 +53,10 @@ public class MessageService {
     public List<ConversationSummaryDTO> getConversations(String username) {
         return conversationRepository.findFirstQuestionAndAnswerPerConversation(username);
     }
+
+    // fuctie care ia intrebarile care au "checked" = false
+    public List<Conversation> getUncheckedQuestions() {
+        return conversationRepository.findByCheckedFalse();
+    }
+
 }

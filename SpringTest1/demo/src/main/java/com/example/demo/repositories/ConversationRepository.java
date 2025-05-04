@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
     List<Conversation> findByuser(String user);
+    List<Conversation> findByConversationId(Integer conversationId);
+    List<Conversation> findByCheckedFalse();
+
     @Query("SELECT new com.example.demo.utils.ConversationSummaryDTO(c.conversationId, c.question, c.answer) " +
             "FROM Conversation c " +
             "WHERE c.user = :username AND c.id IN (" +
