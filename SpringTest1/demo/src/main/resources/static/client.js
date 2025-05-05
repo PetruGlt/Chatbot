@@ -36,7 +36,6 @@ class ClientLogin {
         else if (this.validateCredentials() == 2) alert("E nevoie să introduceti un username!");
         else alert("E nevoie sa introduceti un username si o parola!");
 
-
     }
 }
 
