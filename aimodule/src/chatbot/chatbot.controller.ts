@@ -1,10 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ChatbotService } from './chatbot.service'; 
+import { ConversationService } from 'src/conversation/conversation.service';
 
 @Controller('chatbot')
 export class ChatbotController {
 
-    constructor(private chatbotService: ChatbotService) {}
+    constructor(private chatbotService: ChatbotService, private conversationService: ConversationService) {}
 
     @Post('ask')
     public async ask(@Body() body) {
