@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return Utilizatorul găsit sau null dacă nu există.
      */
     User findByUsername(String username);
+    boolean existsByUsername(String username);
 
 }

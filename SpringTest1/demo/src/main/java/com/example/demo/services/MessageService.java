@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.models.Conversation;
 import com.example.demo.repositories.ConversationRepository;
+import com.example.demo.utils.ConversationSummaryDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriUtils;
@@ -49,7 +50,13 @@ public class MessageService {
     }
 
     // functie care preia din tabela messajele cu conversationId
-    public List<Conversation> getConversations(Integer conversationId) {
-        return conversationRepository.findByConversationId(conversationId);
+    public List<ConversationSummaryDTO> getConversations(String username) {
+        return conversationRepository.findFirstQuestionAndAnswerPerConversation(username);
     }
+
+    // fuctie care ia intrebarile care au "checked" = false
+    public List<Conversation> getUncheckedQuestions() {
+        return conversationRepository.findByCheckedFalse();
+    }
+
 }

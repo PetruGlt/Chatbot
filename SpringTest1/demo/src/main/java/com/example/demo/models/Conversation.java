@@ -24,6 +24,17 @@ public class Conversation {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
+    @Column(name = "updated_response", columnDefinition = "TEXT")
+    private String updatedResponse;
+
+    @Column(name = "checked", nullable = false, columnDefinition = "TEXT")
+    private Boolean checked = false;
+
+
+    public String getUpdatedResponse() { return updatedResponse; }
+    public void setUpdatedResponse(String updatedResponse) { this.updatedResponse = updatedResponse; }
+    public Boolean getChecked() { return checked; }
+    public void setChecked(Boolean checked) { this.checked = checked; }
     public String getQuestion() {
         return question;
     }

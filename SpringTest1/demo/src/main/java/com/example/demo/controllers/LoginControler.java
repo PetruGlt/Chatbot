@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.services.AuthService;
+import com.example.demo.services.RedirectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,12 @@ public class LoginControler {
 
     // Serviciu pentru autentificare
     private final AuthService authService;
+    private final RedirectService redirectService;
 
     // Constructor care injectează AuthService
-    public LoginControler(AuthService authService) {
+    public LoginControler(AuthService authService, RedirectService redirectService) {
         this.authService = authService;
+        this.redirectService = redirectService;
     }
 
     /**
@@ -41,11 +44,12 @@ public class LoginControler {
         System.out.println("Received credentials: " + encodedCredentials);
 
         if (authService.authenticate(encodedCredentials)) {
-            return new RedirectView("/main");
-        } else {
-            return new RedirectView("/login?error");
+            return redirectService.redirectLogin(encodedCredentials);
         }
+
+        return new RedirectView("/login?error=true");
     }
+
 
     /**
      * Afișează pagina principală după autentificare.
@@ -55,6 +59,12 @@ public class LoginControler {
     public String showMainPage() {
         return "MainPage";  // Aceasta va reda MainPage.html
     }
+
+    @GetMapping("/mainExpert")
+    public String showMainExpertPage() {
+        return "mainPageExpert";
+    }
+
 
     /**
      * Afișează pagina clientului.
