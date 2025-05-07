@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/showHistory";
     })
 
+
     function sendQuestion(questionText) {
 
         const questionEl = document.createElement("article");
