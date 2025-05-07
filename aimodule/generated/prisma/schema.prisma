@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model conversation_history {
+  id               BigInt   @id @default(autoincrement())
+  user             String   @db.Text
+  conversation_id  Int
+  question         String   @db.Text
+  answer           String   @db.Text
+  updated_response String?  @db.Text
+  checked          Boolean? @default(false)
+}
+
+model users {
+  username String       @id @db.VarChar(255)
+  password String?      @db.VarChar(255)
+  access   users_access
+}
+
+enum users_access {
+  USER
+  ADMIN
+}
