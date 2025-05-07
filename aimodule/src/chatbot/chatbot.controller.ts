@@ -10,16 +10,18 @@ export class ChatbotController {
     @Post('ask')
     public async ask(@Body() body) {
         if(body == null)
-            return "Please provide a prompt.";
+            return "Please provide a request body.";
         
         if(body.conversationId) {
             const conversation = await this.conversationService.getHistory(body.conversationId);
             
             const answer = await this.chatbotService.ask(conversation.history, conversation.prompt);
             
-            return { answer };
+            return { 
+                answer: answer 
+            };
         } else {
-            return await this.chatbotService.ask(body.question);
+            return "Please provide the conversationId."; 
         }
     }
 }
