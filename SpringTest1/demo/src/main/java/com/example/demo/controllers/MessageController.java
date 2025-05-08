@@ -66,7 +66,7 @@ public class MessageController {
         return chatList;
     }
 
-    @GetMapping("/questions")
+    @PostMapping("/questions")
     @ResponseBody
     public List<Map<String, Object>> getUncheckedQuestions() {
         List<Conversation> unchecked = messageService.getUncheckedQuestions();

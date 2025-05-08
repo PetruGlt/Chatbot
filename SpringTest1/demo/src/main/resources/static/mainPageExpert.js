@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // --- Fetch Q&A Data ---
-    fetch("/qa/pending", { // ! probabil alt nume aici !
+    fetch("/questions", { // ! probabil alt nume aici !
         method: "POST",
         headers: {
             "Accept": "application/json",
