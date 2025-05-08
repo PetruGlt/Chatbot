@@ -1,4 +1,4 @@
-import { getConversation } from "./src/services/conversationService";
+import { getConversation } from "./src/services/conversationSerivce";
 
 async function main(){
     const conversationId = 1;
