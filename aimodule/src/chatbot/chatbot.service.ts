@@ -29,7 +29,7 @@ export class ChatbotService {
             },
           });
         
-        const decision = daSauNu.response.candidates?.[0]?.content.parts?.[0]?.text?.trim().toLowerCase();
+        const decision = daSauNu.candidates[0].content.parts[0].text.trim().toLowerCase();
 
         if (decision !== 'da'){
             return 'Imi pare rau, nu pot raspunde la aceasta intrebare.';
