@@ -20,6 +20,21 @@ export class ChatbotService {
     }
 
     private async sendPrompt(history, prompt) {
+        
+        const daSauNu = await this.apiClient.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: `Esti un asistent bancar. Scopul tau este sa raspunzi la prompt-uri cu informatii din domeniul bancar. Poate fi acest prompt folosit in contextul bancar: "${prompt}" ?`,
+            config: {
+              systemInstruction: `Ai voie sa raspunzi doar cu "da" sau "nu"`,
+            },
+          });
+        
+        const decision = daSauNu.response.candidates?.[0]?.content.parts?.[0]?.text?.trim().toLowerCase();
+
+        if (decision !== 'da'){
+            return 'Imi pare rau, nu pot raspunde la aceasta intrebare.';
+        }
+        
         const chat = await this.apiClient.chats.create({
             model: this.configService.get("GOOGLE_AI_MODEL"),
             history: history,
