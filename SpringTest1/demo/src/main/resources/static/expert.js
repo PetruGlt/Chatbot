@@ -26,7 +26,7 @@ class ExpertLogin {
                 },
             }).then(response => {
                 if (response.redirected) {
-                    sessionStorage.setItem("username", this.username);
+                    sessionStorage.setItem("username", this.id);
                     window.location.href = response.url;
                 }
             })

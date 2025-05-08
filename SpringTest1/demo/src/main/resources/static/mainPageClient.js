@@ -6,10 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem("conversationId", "1");
     }
 
+
+
     const questionInput = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
 
     const username = sessionStorage.getItem("username");
+
+    if (!username) {
+        window.location.href = "/login";
+        return;
+    }
 
     const sendBtn = document.getElementById("sendBtn");
     const logoutBtn = document.getElementById("logout");
