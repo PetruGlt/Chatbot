@@ -3,9 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { ConfigModule } from '@nestjs/config';
+import { ConversationModule } from './conversation/conversation.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [ChatbotModule, ConfigModule.forRoot({ isGlobal: true })],
+  imports: [PrismaModule, ConfigModule.forRoot({ isGlobal: true }), ChatbotModule, ConversationModule],
   controllers: [AppController],
   providers: [AppService],
 })
