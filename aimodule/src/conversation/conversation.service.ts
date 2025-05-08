@@ -1,21 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ConversationService {
 
+    constructor(private readonly prisma: PrismaService) {}
+
     public async getHistory(conversationId) {
-        return {
-            history: [
-                {
-                    role: "user",
-                    parts: [{ text: "Există un comision pentru deschiderea unui cont curent?" }],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "În general, nu se percepe un comision de deschidere pentru conturile curente. Totuși, pot exista cazuri speciale în care se aplică o taxă. E important să verifici tarifele actualizate direct pe site-ul băncii pentru a fi la curent cu costurile." }],
-                },
-            ],
-            prompt: "Cum deschid un credit?"
+        const rows = await this.prisma.conversation_history.findMany({
+            where: { conversation_id: conversationId },
+            orderBy: { id: 'asc' }
+        });
+        
+        type Message = {
+            role: "user" | "model";
+            parts: { text: string}[];
+        };
+    
+        const result: Message[] = [];
+    
+        for(const row of rows){
+            result.push({
+                role: "user",
+                parts: [{text: row.question}],
+            });
+            result.push({
+                role : "model",
+                parts: [{text: row.answer}],
+            });
         }
+
+        result.pop();
+        const prompt = result.pop()?.parts[0]?.text;
+    
+        return { history: result, prompt };
     }
 }
