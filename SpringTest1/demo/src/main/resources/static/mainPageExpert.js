@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- DOM Elements ---
     const qaList = document.getElementById("qaList");
     const logoutBtn = document.getElementById("logout");
-    const username = sessionStorage.getItem("username");
+    const username = sessionStorage.getItem( "username");
 
     if (!username) {
         window.location.href = "/login";
