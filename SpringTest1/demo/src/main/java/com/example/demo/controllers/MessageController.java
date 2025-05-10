@@ -24,12 +24,22 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @PostMapping("/ask")
+    @PostMapping("/chatbot/ask")
     @ResponseBody//Frontul trimite si asteapta JSON
     public Map<String, String> sendMessage(@RequestBody QuestionObject dto) {
-        String answer = messageService.sendQuestion(dto.question, dto.username, dto.conversationId);
-        // Returnam un obiect Json: { "answer": "Hello!" }
-        return Map.of("answer", answer);
+      Conversation conversation = new Conversation();
+      conversation.setUser(dto.username);
+      conversation.setQuestion(dto.question);
+      conversation.setConversationId(dto.conversationId);
+      conversation.setAnswer("");
+      conversation.setChecked(false);
+
+      Conversation savedConversation = messageService.saveConversation(conversation);
+      //Sending answer to AI
+      String answer = messageService.sendQuestion(dto.conversationId);
+      savedConversation.setAnswer(answer);
+      messageService.saveConversation(savedConversation);
+      return Map.of("answer", answer);
     }
 
     @GetMapping("/showHistory")
