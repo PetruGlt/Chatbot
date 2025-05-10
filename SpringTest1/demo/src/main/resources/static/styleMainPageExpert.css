@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Verdana, sans-serif;
-    background: linear-gradient(135deg, #2c3e50, #34495e);
+    background: linear-gradient(135deg, #3b3a30, #232727);
     color: #ecf0f1;
     height: 100vh;
     display: flex;
@@ -15,20 +15,40 @@ body {
 aside {
     width: 250px;
     padding: 20px;
-    background-color: #1a252f;
+    background-color: #2a2c21;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
-#logout {
-    font-size: 20px;
-    background: transparent;
-    color: #8aa277;
-    border: 2px solid #8aa277;
+#hexpert {
     padding: 10px;
-    border-radius: 6px;
+    background-color: transparent;
+    color: #8aa277;
+    text-align: center;
+    font-size: 32px;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
+
+#logout{
+    background: transparent;
+    color: #405d27;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 35px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#logout:hover{
+    transition-timing-function: ease-in-out;
+    transition: color 0.2s;
+    color: #8aa277;
 }
 
 main {
@@ -37,10 +57,15 @@ main {
     overflow-y: auto;
 }
 
-header {
-    font-size: 36px;
-    margin-bottom: 20px;
+#mheader {
+    padding: 10px;
+    background-color: transparent;
     color: #8aa277;
+    text-align: center;
+    font-size: 50px;
+    font-family: 'Verdana';
+    font-weight: bold;
+    margin-bottom: 75px;
 }
 
 .qa-list {
@@ -50,9 +75,9 @@ header {
 }
 
 .qa-block {
-    background-color: #22313f;
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 15px;
-    border: 1px solid #8aa277;
+    border: 2px solid #8aa277;
     border-radius: 8px;
 }
 
@@ -60,9 +85,9 @@ textarea {
     width: 100%;
     height: 80px;
     margin-top: 10px;
-    background-color: #1a252f;
+    background-color: rgba(255, 255, 255, 0.1);
     color: #ecf0f1;
-    border: 1px solid #8aa277;
+    border: 2px solid #8aa277;
     border-radius: 5px;
     padding: 8px;
     font-family: monospace;
