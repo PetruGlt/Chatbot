@@ -101,7 +101,7 @@ jobs:
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
             touch .env &&
-            echo 'DATABASE_URL="mysql://root:password@localhost:3306/mydb"' > .env"
+            echo 'DATABASE_URL="mysql://remote:Dacia2025@localhost:3306/mydb"' > .env"
           
 
       - name: Start Node.js App on Server
