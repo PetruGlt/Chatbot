@@ -21,7 +21,7 @@ jobs:
         working-directory: Chatbot/aimodule
         run: |
           echo "Navigating to Node.js application directory..."
-          ls -R
+
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
