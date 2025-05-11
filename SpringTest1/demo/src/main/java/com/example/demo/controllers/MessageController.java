@@ -34,11 +34,11 @@ public class MessageController {
       conversation.setAnswer("");
       conversation.setChecked(false);
 
-      Conversation savedConversation = messageService.saveConversation(conversation);
-      //Sending answer to AI
+      // update to avoid double saving:
       String answer = messageService.sendQuestion(dto.conversationId);
-      savedConversation.setAnswer(answer);
-      messageService.saveConversation(savedConversation);
+      conversation.setAnswer(answer);
+      messageService.saveConversation(conversation);
+
       return Map.of("answer", answer);
     }
 

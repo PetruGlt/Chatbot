@@ -31,6 +31,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Starter pentru JPA (persistență în baze de date) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
