@@ -18,7 +18,7 @@ jobs:
         run: ls -R
 
       - name: Navigate to Node.js App Directory
-        working-directory: Chatbot/aimodule
+        working-directory: aimodule
         run: |
           echo "Navigating to Node.js application directory..."
 
