@@ -31,7 +31,7 @@ public class RegistrationController {
 
         User user = new User();
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword()); // Consider hashing the password\
+        user.setPassword(userDto.getPassword()); 
         user.setAccess(userDto.getAccess());
         userRepository.save(user);
 

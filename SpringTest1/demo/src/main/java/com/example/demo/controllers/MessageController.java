@@ -24,12 +24,22 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @PostMapping("/ask")
+    @PostMapping("/chatbot/ask")
     @ResponseBody//Frontul trimite si asteapta JSON
     public Map<String, String> sendMessage(@RequestBody QuestionObject dto) {
-        String answer = messageService.sendQuestion(dto.question, dto.username, dto.conversationId);
-        // Returnam un obiect Json: { "answer": "Hello!" }
-        return Map.of("answer", answer);
+      Conversation conversation = new Conversation();
+      conversation.setUser(dto.username);
+      conversation.setQuestion(dto.question);
+      conversation.setConversationId(dto.conversationId);
+      conversation.setAnswer("");
+      conversation.setChecked(false);
+
+      // update to avoid double saving:
+      String answer = messageService.sendQuestion(dto.conversationId);
+      conversation.setAnswer(answer);
+      messageService.saveConversation(conversation);
+
+      return Map.of("answer", answer);
     }
 
     @GetMapping("/showHistory")
@@ -66,7 +76,7 @@ public class MessageController {
         return chatList;
     }
 
-    @GetMapping("/questions")
+    @PostMapping("/questions")
     @ResponseBody
     public List<Map<String, Object>> getUncheckedQuestions() {
         List<Conversation> unchecked = messageService.getUncheckedQuestions();
@@ -82,6 +92,20 @@ public class MessageController {
         }
 
         return result;
+    }
+
+    @PostMapping("/questions/{questionID}")
+    @ResponseBody
+    public Map<String, String> markQuestionAsChecked(@PathVariable Long questionID){
+        Conversation conversation = messageService.getConversationById(questionID);
+        if(conversation == null){
+            return Map.of("message", "Conversation not found");
+        }
+
+        conversation.setChecked(true);
+        messageService.saveConversation(conversation);
+
+        return Map.of("message", "Question marked as checked");
     }
 
 
