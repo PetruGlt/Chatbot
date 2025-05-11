@@ -18,7 +18,10 @@ jobs:
         run: ls -R
 
       - name: Navigate to Node.js App Directory
-        run: cd aimodule
+        working-directory: Chatbot/aimodule
+        run: |
+          echo "Navigating to Node.js application directory..."
+          ls -R
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -26,16 +29,18 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
+        working-directory: Chatbot/aimodule
         run: npm install
 
       - name: Build App
+        working-directory: Chatbot/aimodule
         run: npm run build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nodejs-app
-          path: aimodule
+          path: Chatbot/aimodule
 
   deploy:
     name: Deploy to Server
