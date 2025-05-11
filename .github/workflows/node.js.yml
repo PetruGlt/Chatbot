@@ -15,22 +15,28 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Debug Current Directory
-        run: ls -R
+        run: |
+          echo "Listing all files and directories:"
+          ls -R
+
+      - name: Set up Node.js (v23.11.0)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23.11.0'
 
       - name: Navigate to Node.js App Directory
         working-directory: aimodule
         run: |
           echo "Navigating to Node.js application directory..."
-
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+          ls -R
 
       - name: Install Dependencies
         working-directory: aimodule
         run: npm install
+
+      - name: Generate Prisma Client (Optional)
+        working-directory: aimodule
+        run: npx prisma generate
 
       - name: Build App
         working-directory: aimodule
@@ -63,7 +69,19 @@ jobs:
       - name: Add Server to Known Hosts
         run: |
           ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
-          
+
+      - name: Debug Node.js Environment on Server
+        env:
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "
+            echo 'Node.js Version:'
+            /home/founder/.nvm/versions/node/v23.11.0/bin/node -v
+            echo 'npm Version:'
+            /home/founder/.nvm/versions/node/v23.11.0/bin/npm -v
+          "
+
       - name: Deploy Node.js App to Server
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
@@ -82,4 +100,9 @@ jobs:
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           echo "Starting the Node.js app on the server..."
-          ssh $DEPLOY_USER@$DEPLOY_SERVER "cd $DEPLOY_PATH && /home/founder/.nvm/versions/node/v23.11.0/bin/npm install && /home/founder/.nvm/versions/node/v23.11.0/bin/npm start"
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "
+            cd $DEPLOY_PATH &&
+            /home/founder/.nvm/versions/node/v23.11.0/bin/npm install &&
+            /home/founder/.nvm/versions/node/v23.11.0/bin/npx prisma generate &&
+            /home/founder/.nvm/versions/node/v23.11.0/bin/npm start
+          "
