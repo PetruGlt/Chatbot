@@ -63,6 +63,21 @@ jobs:
       - name: Add Server to Known Hosts
         run: |
           ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+          
+      - name: Install Node.js on Server
+        env:
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          echo "Installing Node.js on the server..."
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs"
+
+      - name: Verify Node.js and npm on Server
+        env:
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "node -v && npm -v"
 
       - name: Deploy Node.js App to Server
         env:
