@@ -82,4 +82,4 @@ jobs:
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           echo "Starting the Node.js app on the server..."
-          ssh $DEPLOY_USER@$DEPLOY_SERVER "cd $DEPLOY_PATH && npm install && npm start"
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "cd $DEPLOY_PATH && /home/founder/.nvm/versions/node/v23.11.0/bin/npm install && /home/founder/.nvm/versions/node/v23.11.0/bin/npm start"
