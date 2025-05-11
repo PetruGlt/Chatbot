@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const username = sessionStorage.getItem("username");
 
-    // if (!username) {
-    //     window.location.href = "/login";
-    //     return;
-    // }
+    if (!username) {
+        window.location.href = "/login";
+        return;
+    }
 
     const sendBtn = document.getElementById("sendBtn");
     const logoutBtn = document.getElementById("logout");
