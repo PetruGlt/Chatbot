@@ -92,6 +92,15 @@ jobs:
           rsync -avz --delete nodejs-app/ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
           
           echo "Deployed successfully!"
+      - name: env file
+        env:
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ~/Chatbot/aimodule
+        run: |
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "
+            echo 'DATABASE_URL="mysql://root:password@localhost:3306/mydb"' > .env"
+          
 
       - name: Start Node.js App on Server
         env:
