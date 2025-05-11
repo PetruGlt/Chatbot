@@ -99,6 +99,8 @@ jobs:
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
+            cd $DEPLOY_PATH &&
+            touch .env &&
             echo 'DATABASE_URL="mysql://root:password@localhost:3306/mydb"' > .env"
           
 
@@ -113,5 +115,5 @@ jobs:
             cd $DEPLOY_PATH &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npm install &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npx prisma generate &&
-            /home/founder/.nvm/versions/node/v23.11.0/bin/npm start
+            /home/founder/.nvm/versions/node/v23.11.0/bin/npm run start:prod
           "
