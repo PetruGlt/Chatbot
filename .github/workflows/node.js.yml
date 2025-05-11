@@ -113,6 +113,7 @@ jobs:
           echo "Starting the Node.js app on the server..."
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
+            pkill -f 'node' || true &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npm install &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npx prisma generate &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npm run start:prod &
