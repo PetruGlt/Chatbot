@@ -94,6 +94,20 @@ public class MessageController {
         return result;
     }
 
+    @PostMapping("/questions/{questionID}")
+    @ResponseBody
+    public Map<String, String> markQuestionAsChecked(@PathVariable Long questionID){
+        Conversation conversation = messageService.getConversationById(questionID);
+        if(conversation == null){
+            return Map.of("message", "Conversation not found");
+        }
+
+        conversation.setChecked(true);
+        messageService.saveConversation(conversation);
+
+        return Map.of("message", "Question marked as checked");
+    }
+
 
 
 

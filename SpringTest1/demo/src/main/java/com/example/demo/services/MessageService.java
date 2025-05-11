@@ -57,4 +57,10 @@ public class MessageService {
         return conversationRepository.findByCheckedFalse();
     }
 
+    // functie care preia questoin cu id = id
+    public Conversation getConversationById(Long id) {
+        return conversationRepository.findById(id).orElse(null);
+    }
+
+
 }
