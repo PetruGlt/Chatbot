@@ -15,49 +15,117 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class RegistrationControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-    @Test
-    public void testRegisterUser_success() throws Exception {
-        String json = """
+  @Test
+  public void testRegisterUser_success() throws Exception {
+    String json = """
             { "username": "testuser123",
-              "password": "securepass",
+              "password": "parola123",
               "access": "USER"
             }
         """;
 
-        mockMvc.perform(post("/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Cont creat cu succes"));
-    }
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(json))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value("Cont creat cu succes!"));
+  }
 
-    @Test
-    public void testRegisterUser_duplicateUsername() throws Exception {
-        String json = """
+  @Test
+  public void testRegisterUser_duplicateUsername() throws Exception {
+    String json = """
             {
               "username": "testuser123",
-              "password": "securepass",
+              "password": "parola123",
               "access": "USER"
             }
         """;
 
-        mockMvc.perform(post("/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk());
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(json))
+        .andExpect(status().isOk());
 
-        mockMvc.perform(post("/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("Username-ul este deja luat..!"));
-    }
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(json))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Username-ul este deja luat!"));
+  }
+
+}
+
+  @Test
+  public void testRegisterUser_missingRequiredFields() throws Exception {
+    String jsonMissingPassword = """
+            {
+              "username": "testuser123",
+              "access": "USER"
+            }
+        """;
+
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonMissingPassword))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Toate campurile sunt obligatorii"));
+
+    String jsonMissingUsername = """
+            {
+              "password": "parola",
+              "access": "USER"
+            }
+        """;
+
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonMissingUsername))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Toate campurile sunt obligatorii"));
+  }
+
+  @Test
+  public void testRegisterUser_invalidAccessLevel() throws Exception {
+    String jsonInvalidAccess = """
+            {
+              "username": "testuser456",
+              "password": "parola123",
+              "access": "INVALID_ROLE"
+            }
+        """;
+
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonInvalidAccess))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Nivel de acces invalid"));
+  }
+
+@Test
+public void testRegisterUser_passwordComplexityValidation() throws Exception {
+    String jsonShortPassword = """
+        {
+          "username": "testuser789",
+          "password": "pass",
+          "access": "USER"
+        }
+    """;
+    
+    mockMvc.perform(post("/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonShortPassword))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.success").value(false))
+            .andExpect(jsonPath("$.message").value("Parola trebuie sa contina minim 8 caractere!"));
 }
