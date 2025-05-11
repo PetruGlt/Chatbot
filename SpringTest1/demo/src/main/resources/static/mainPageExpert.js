@@ -3,14 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- DOM Elements ---
     const qaList = document.getElementById("qaList");
     const logoutBtn = document.getElementById("logout");
-    const username = sessionStorage.getItem( "username");
+    const username = sessionStorage.getItem("username");
 
     if (!username) {
         window.location.href = "/login";
         return;
     }
 
-    // --- Mock Data for Testing ---
+    //--- Mock Data for Testing ---
     // Uncomment for standalone testing without a backend
     // const mockQA = [
     //     { id: 101, question: "How do I update my billing address?", answer: "Visit the billing section in your account." },
@@ -18,15 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
     //     { id: 103, question: "Can I cancel my subscription?", answer: "Yes, you can cancel anytime from your profile." }
     // ];
     // mockQA.forEach(qa => {
-    //     const card = document.createElement("div");
-    //     card.className = "qa-card";
-    //     card.innerHTML = `
-    //         <h3>Q&A ${qa.id}</h3>
-    //         <p><strong>Q:</strong> ${qa.question}</p>
-    //         <textarea>${qa.answer}</textarea>
-    //         <p class="hint">Press Enter to submit</p>
-    //     `;
-    //
+    // const card = document.createElement("div");
+    // card.className = "qa-card";
+    // card.innerHTML = `
+    //     <h3>Q&A ${qa.id}</h3>
+    //     <p><strong>Q:</strong> ${qa.question}</p>
+    //     <textarea>${qa.answer}</textarea>
+    //     <p class="hint">Press Enter to submit (will validate the answer)</p>
+    //     <input type="hidden" class="validation-code" value="0">
+    // `;
+    
     //     const textarea = card.querySelector("textarea");
     //     textarea.addEventListener("keydown", (e) => {
     //         if (e.key === "Enter" && !e.shiftKey) {
@@ -35,19 +36,19 @@ document.addEventListener("DOMContentLoaded", () => {
     //             submitAnswer(qa.id, updatedAnswer, card);
     //         }
     //     });
-    //
+    
     //     card.addEventListener("click", (e) => {
     //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
     //             sessionStorage.setItem("qaId", qa.id);
     //             window.location.href = "/qaDetail"; // Path to Q&A detail page
     //         }
     //     });
-    //
+    
     //     qaList.appendChild(card);
     // });
 
 
-    // --- Fetch Q&A Data ---
+    //--- Fetch Q&A Data ---
     fetch("/questions", { // ! probabil alt nume aici !
         method: "POST",
         headers: {
@@ -69,7 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3>Q&A ${qa.id}</h3>
                     <p><strong>Q:</strong> ${qa.question}</p>
                     <textarea>${qa.answer}</textarea>
-                    <p class="hint">Press Enter to submit</p>
+                    <p class="hint">Press Enter to submit (will validate the answer)</p>
+                    <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                 `;
 
                 // Add submit functionality to textarea
@@ -119,7 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ id, updatedAnswer, username })
+            body: JSON.stringify({ 
+                id, 
+                updatedAnswer, 
+                username, 
+                validation: "1" 
+            })
         })
             .then(response => {
                 if (!response.ok) throw new Error("Failed to submit answer");

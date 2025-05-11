@@ -5,7 +5,6 @@ body {
     height: 100vh;
 }
 
-/* Layout remains the same */
 .container {
     display: grid;
     grid-template-areas:
@@ -19,7 +18,6 @@ body {
 
 }
 
-/* Sidebar stays on the left */
 aside {
     width: 350px;
     justify-content: center;
@@ -29,7 +27,6 @@ aside {
     flex-direction: column;
     gap: 10px;
     padding: 20px;
-
     overflow: hidden;
 }
 
@@ -79,13 +76,13 @@ aside {
     transition: color 0.2s;
     color: #8aa277;
 }
+
 #logout:hover{
     transition-timing-function: ease-in-out;
     transition: color 0.2s;
     color: #8aa277;
 }
 
-/* Chat area on the right */
 main {
     grid-area: content;
     display: flex;
@@ -95,7 +92,6 @@ main {
     overflow: hidden;
 }
 
-/* Header */
 header {
     padding: 10px;
     background-color: transparent;
@@ -107,12 +103,9 @@ header {
     margin-bottom: 20px;
     position: absolute;
     top: 40%;
-    left: 50%;
-    transform: translateX(-50%);
     width: 100%;
 }
 
-/* Conversation area scrollable */
 .conversation {
     flex: 1;
     overflow: auto;
@@ -132,7 +125,6 @@ header {
     pointer-events: none;
 }
 
-/* Input bar stays at bottom of main */
 .input-bar {
     display: flex;
     gap: 10px;
@@ -167,7 +159,6 @@ header {
     background-color: #405d27;
 }
 
-/* Message styling */
 .message {
     max-width: 100%;
     padding: 10px;
@@ -185,5 +176,11 @@ header {
 .message.answer {
     align-self: flex-start;
     background-color: rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.valiated.answer {
+    align-self: flex-start;
+    background-color: rgba(79, 247, 169, 0.377);
     text-align: left;
 }
