@@ -102,7 +102,6 @@ jobs:
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
             touch .env &&
-            # echo 'DATABASE_URL="mysql://remote:Dacia2025%21@localhost:3306/Accounts"' > .env"
             echo $DATABASE_URL > .env"
           
 
