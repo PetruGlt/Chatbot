@@ -86,6 +86,7 @@ public class MessageController {
             Map<String, Object> map = new HashMap<>();
             map.put("id", c.getId());
             map.put("question", c.getQuestion());
+            map.put("answer", c.getAnswer());
             map.put("user", c.getUser());
             map.put("conversationId", c.getConversationId());
             result.add(map);
