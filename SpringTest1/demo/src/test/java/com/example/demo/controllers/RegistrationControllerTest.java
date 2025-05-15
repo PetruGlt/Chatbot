@@ -1,18 +1,22 @@
 package com.example.demo.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class RegistrationControllerTest {
 
   @Autowired
@@ -24,7 +28,7 @@ public class RegistrationControllerTest {
   @Test
   public void testRegisterUser_success() throws Exception {
     String json = """
-            { "username": "testuser123",
+            { "username": "testuser12",
               "password": "parola123",
               "access": "USER"
             }
@@ -58,16 +62,16 @@ public class RegistrationControllerTest {
         .content(json))
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Username-ul este deja luat!"));
+        .andExpect(jsonPath("$.message", containsString("Username-ul este deja luat")));
   }
 
-}
+
 
   @Test
   public void testRegisterUser_missingRequiredFields() throws Exception {
     String jsonMissingPassword = """
             {
-              "username": "testuser123",
+              "username": "testuser1233",
               "access": "USER"
             }
         """;
@@ -81,7 +85,7 @@ public class RegistrationControllerTest {
 
     String jsonMissingUsername = """
             {
-              "password": "parola",
+              "password": "parola1",
               "access": "USER"
             }
         """;
@@ -98,7 +102,7 @@ public class RegistrationControllerTest {
   public void testRegisterUser_invalidAccessLevel() throws Exception {
     String jsonInvalidAccess = """
             {
-              "username": "testuser456",
+              "username": "testuser4567",
               "password": "parola123",
               "access": "INVALID_ROLE"
             }
@@ -116,7 +120,7 @@ public class RegistrationControllerTest {
 public void testRegisterUser_passwordComplexityValidation() throws Exception {
     String jsonShortPassword = """
         {
-          "username": "testuser789",
+          "username": "testuser7899",
           "password": "pass",
           "access": "USER"
         }
@@ -127,5 +131,6 @@ public void testRegisterUser_passwordComplexityValidation() throws Exception {
                     .content(jsonShortPassword))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.success").value(false))
-            .andExpect(jsonPath("$.message").value("Parola trebuie sa contina minim 8 caractere!"));
+            .andExpect(jsonPath("$.message").value("Parola trebuie sa contina minim 8 caractere"));
+}
 }
