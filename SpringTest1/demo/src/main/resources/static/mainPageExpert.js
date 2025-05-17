@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    const userIdDisplay = document.getElementById("userIdDisplay");
+
+    if (userIdDisplay && username) {
+        const numericId = username.replace(/\D/g, '');
+        userIdDisplay.textContent = `Expert ID: #${numericId}`;
+    }
+
+
     //--- Mock Data for Testing ---
     // Uncomment for standalone testing without a backend
     // const mockQA = [
@@ -27,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     <p class="hint">Press Enter to submit (will validate the answer)</p>
     //     <input type="hidden" class="validation-code" value="0">
     // `;
-    
+
     //     const textarea = card.querySelector("textarea");
     //     textarea.addEventListener("keydown", (e) => {
     //         if (e.key === "Enter" && !e.shiftKey) {
@@ -36,14 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
     //             submitAnswer(qa.id, updatedAnswer, card);
     //         }
     //     });
-    
+
     //     card.addEventListener("click", (e) => {
     //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
     //             sessionStorage.setItem("qaId", qa.id);
     //             window.location.href = "/qaDetail"; // Path to Q&A detail page
     //         }
     //     });
-    
+
     //     qaList.appendChild(card);
     // });
 
@@ -84,14 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // Add click handler for card (redirect to detail page)
-                card.addEventListener("click", (e) => {
-                    if (e.target.tagName !== "TEXTAREA") { // Prevent redirect when editing
-                        sessionStorage.setItem("qaId", qa.id);
-                        window.location.href = "/qaDetail"; // Path to Q&A detail page
-                    }
-                });
-
                 qaList.appendChild(card);
             });
         })
@@ -124,8 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({ 
                 id, 
                 updatedAnswer, 
-                username, 
-                validation: "1" 
+                username
             })
         })
             .then(response => {

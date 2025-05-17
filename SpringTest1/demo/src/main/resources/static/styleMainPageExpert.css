@@ -21,6 +21,15 @@ aside {
     justify-content: center;
 }
 
+.expert-id-display {
+    font-size: 20px;
+    color: #8aa277;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
+
 #hexpert {
     padding: 10px;
     background-color: transparent;
