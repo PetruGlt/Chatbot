@@ -62,5 +62,9 @@ public class MessageService {
         return conversationRepository.findById(id).orElse(null);
     }
 
+    public List<Conversation> getValidatedMessages(String username, Integer conversationId) {
+        return conversationRepository.findByUserAndConversationIdAndCheckedTrue(username, conversationId);
+    }
+
 
 }
