@@ -17,6 +17,14 @@ body {
     box-sizing: border-box;
 
 }
+.user-id-display {
+    font-size: 20px;
+    color: #8aa277;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
 
 aside {
     width: 350px;

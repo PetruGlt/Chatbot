@@ -15,6 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // pana aici
 
 
+    if (sessionStorage.getItem("hasSentFirstMessage") === null) {
+        setUserSentMessage(false);
+    }
+
+    function setUserSentMessage(value) {
+        sessionStorage.setItem("hasSentFirstMessage", value ? "true" : "false");
+    }
+
+    function hasUserSentMessage() {
+        return sessionStorage.getItem("hasSentFirstMessage") === "true";
+    }
 
     //doar pentru testare
 
@@ -76,9 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
                 card.addEventListener("click", () => {
-                    //salvam in sessionStorage id-ul conversatiei pe care vrem sa o reluam
                     sessionStorage.setItem("conversationId", conversation.conversationId);
-                    window.location.href = "MainPage.html";       //path!!!
+                    window.location.href = "/mainPageClient";       //path!!!
                 });
 
                 historyList.appendChild(card);
@@ -93,11 +103,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+    // newConversationBtn.addEventListener("click", () => {
+    //     let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
+    //     sessionStorage.setItem("conversationId", (currentId + 1).toString());
+    //     window.location.href = "/mainPageClient";                 //path!!
+    // });
+
     newConversationBtn.addEventListener("click", () => {
-        let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
-        sessionStorage.setItem("conversationId", (currentId + 1).toString());
-        window.location.href = "/mainPageClient";                 //path!!
+        if (hasUserSentMessage()) {
+            let currentId = parseInt(sessionStorage.getItem("conversationId") || "0");
+            sessionStorage.setItem("conversationId", (currentId + 1).toString());
+            setUserSentMessage(false);
+        }
+        window.location.href = "/mainPageClient";
     });
+
 
     historyBtn.addEventListener("click", () => {
         window.location.href = "/showHistory";           //path!!
