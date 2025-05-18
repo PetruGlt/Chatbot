@@ -29,10 +29,7 @@ export class ConversationService {
                 parts: [{text: row.answer}],
             });
         }
-
-        result.pop();
-        const prompt = result.pop()?.parts[0]?.text;
     
-        return { history: result, prompt };
+        return result;
     }
 }

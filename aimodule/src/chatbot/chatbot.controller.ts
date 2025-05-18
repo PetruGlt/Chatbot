@@ -15,7 +15,7 @@ export class ChatbotController {
         if(body.conversationId) {
             const conversation = await this.conversationService.getHistory(body.conversationId);
             
-            const answer = await this.chatbotService.ask(conversation.history, conversation.prompt);
+            const answer = await this.chatbotService.ask(conversation, body.prompt);
             
             return { 
                 answer: answer 
