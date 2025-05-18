@@ -194,18 +194,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     conversationId: conversationId
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error("Invalid data format received");
+                    }
+
                     data.forEach(validatedMessage => {
                         document.querySelectorAll('.message .answer').forEach(answerEl => {
-                            if (answerEl.dataset.validation === "0" && validatedMessage.validation === "1") {
+                            const matchingQuestion = answerEl.dataset.question === validatedMessage.question;
+                            const needsValidation = answerEl.dataset.validation === "0";
+                            const isNowValidated = validatedMessage.validation === "1";
+
+                            if (matchingQuestion && needsValidation && isNowValidated) {
                                 answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
                                 answerEl.dataset.validation = "1";
                                 answerEl.classList.add("validated answer");
 
                                 const messageDiv = answerEl.closest('.message');
-                                if (messageValidationMap.has(messageDiv)) {
+                                if (messageDiv && messageValidationMap.has(messageDiv)) {
                                     messageValidationMap.get(messageDiv).validation = "1";
+                                    messageValidationMap.get(messageDiv).answer = validatedMessage.answer;
                                 }
                             }
                         });
