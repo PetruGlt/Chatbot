@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    const userIdDisplay = document.getElementById("userIdDisplay");
+
+    if (userIdDisplay && username) {
+        const numericId = username.replace(/\D/g, '');
+        userIdDisplay.textContent = `Expert ID: #${numericId}`;
+    }
+
+
     //--- Mock Data for Testing ---
     // Uncomment for standalone testing without a backend
     // const mockQA = [
@@ -27,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     <p class="hint">Press Enter to submit (will validate the answer)</p>
     //     <input type="hidden" class="validation-code" value="0">
     // `;
-    
+
     //     const textarea = card.querySelector("textarea");
     //     textarea.addEventListener("keydown", (e) => {
     //         if (e.key === "Enter" && !e.shiftKey) {
@@ -36,14 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
     //             submitAnswer(qa.id, updatedAnswer, card);
     //         }
     //     });
-    
+
     //     card.addEventListener("click", (e) => {
     //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
     //             sessionStorage.setItem("qaId", qa.id);
     //             window.location.href = "/qaDetail"; // Path to Q&A detail page
     //         }
     //     });
-    
+
     //     qaList.appendChild(card);
     // });
 
@@ -84,14 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // Add click handler for card (redirect to detail page)
-                card.addEventListener("click", (e) => {
-                    if (e.target.tagName !== "TEXTAREA") { // Prevent redirect when editing
-                        sessionStorage.setItem("qaId", qa.id);
-                        window.location.href = "/qaDetail"; // Path to Q&A detail page
-                    }
-                });
-
                 qaList.appendChild(card);
             });
         })
@@ -99,6 +99,51 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error loading Q&A:", error);
             qaList.innerHTML = "<p>Failed to load Q&A data.</p>";
         });
+
+    // --- Reload Content Function ---
+    function reloadContent() {
+        qaList.innerHTML = ""; // Clear existing content
+        fetch("/questions", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to fetch Q&A data.");
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(qa => {
+                    const card = document.createElement("div");
+                    card.className = "qa-card";
+                    card.innerHTML = `
+                        <h3>Q&A ${qa.id}</h3>
+                        <p><strong>Q:</strong> ${qa.question}</p>
+                        <textarea>${qa.answer}</textarea>
+                        <p class="hint">Press Enter to submit (will validate the answer)</p>
+                        <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
+                    `;
+
+                    const textarea = card.querySelector("textarea");
+                    textarea.addEventListener("keydown", (e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            const updatedAnswer = textarea.value.trim();
+                            submitAnswer(qa.id, updatedAnswer, card);
+                        }
+                    });
+
+                    qaList.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading Q&A:", error);
+                qaList.innerHTML = "<p>Failed to load Q&A data.</p>";
+            });
+    }
 
     // --- Event Listeners for Buttons ---
     logoutBtn.addEventListener("click", () => {
@@ -115,6 +160,17 @@ document.addEventListener("DOMContentLoaded", () => {
      * @param {HTMLElement} elementToRemove - The DOM element to remove
      */
     function submitAnswer(id, updatedAnswer, elementToRemove) {
+
+        const textarea = elementToRemove.querySelector("textarea");
+        const originalAnswer = textarea.dataset.original?.trim() || "";
+
+        if (!updatedAnswer) {
+            alert("Answer cannot be empty!");
+            return;
+        }
+
+        const payloadAnswer = updatedAnswer === originalAnswer ? null : updatedAnswer;
+
         fetch("/qa/updateAnswer", {
             method: "POST",
             headers: {
@@ -122,19 +178,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ 
-                id, 
-                updatedAnswer, 
-                username, 
-                validation: "1" 
+                id: id, 
+                updatedAnswer: payloadAnswer,
+                username: username,
+                validation: "1"
             })
         })
             .then(response => {
                 if (!response.ok) throw new Error("Failed to submit answer");
                 return response.json();
             })
-            .then(() => {
-                elementToRemove.remove();
-                console.log(`Answer submitted for ID ${id}`);
+            .then(data => {
+                if(data.success) {
+                    elementToRemove.remove();
+                    console.log(`Answer submitted for ID ${id}`);
+                    reloadContent();
+                }
+                else {
+                    throw new Error(data.message || "Validation failed");
+                }
             })
             .catch(err => {
                 console.error("Error submitting answer:", err);

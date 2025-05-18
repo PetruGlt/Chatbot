@@ -18,5 +18,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
             "  SELECT MIN(c2.id) FROM Conversation c2 WHERE c2.user = :username GROUP BY c2.conversationId" +
             ")")
     List<ConversationSummaryDTO> findFirstQuestionAndAnswerPerConversation(@Param("username") String username);
+    List<Conversation> findByUserAndConversationIdAndCheckedTrue(String user, Integer conversationId);
+    @Query("SELECT MAX(c.conversationId) FROM Conversation c WHERE c.user = :username")
+    Integer findMaxConversationIdByUser(@Param("username") String username);
 
 }
