@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // If the updated answer is the same as the original, send null
         const payloadAnswer = updatedAnswer === originalAnswer ? null : updatedAnswer;
 
         fetch("/qa/updateAnswer", {
