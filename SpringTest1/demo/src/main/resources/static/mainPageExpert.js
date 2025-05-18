@@ -165,6 +165,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        const originalAnswer = elementToRemove.querySelector("textarea").defaultValue.trim();
+
+        if (!updatedAnswer) {
+            alert("Answer cannot be empty!");
+            return;
+        }
+
+        const payloadAnswer = updatedAnswer === originalAnswer ? null : updatedAnswer;
+
         fetch("/qa/updateAnswer", {
             method: "POST",
             headers: {
@@ -173,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify({ 
                 id: id, 
-                updatedAnswer: updatedAnswer, 
+                updatedAnswer: payloadAnswer,
                 username: username,
                 validation: "1"
             })

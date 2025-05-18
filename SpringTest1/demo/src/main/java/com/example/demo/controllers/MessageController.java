@@ -111,22 +111,23 @@ public class MessageController {
 
     @PostMapping("/qa/updateAnswer")
     @ResponseBody
-    public Map<String, String> updateExpertAnswer(@RequestBody Map<String, Object> payload) {
+    public Map<String, Object> updateExpertAnswer(@RequestBody Map<String, Object> payload) {
         Long questionId = Long.valueOf(payload.get("id").toString());
         String updatedAnswer = payload.get("updatedAnswer").toString();
         String username = payload.get("username").toString();
 
         Conversation conversation = messageService.getConversationById(questionId);
         if (conversation == null) {
-            return Map.of("message", "Conversation not found");
+            return Map.of("success", false, "message", "Conversation not found");
         }
-        // Actualizare raspuns si marcare ca valifat
+
         conversation.setUpdatedResponse(updatedAnswer);
         conversation.setChecked(true);
         messageService.saveConversation(conversation);
 
-        return Map.of("message", "Answer updated and validated!");
+        return Map.of("success", true, "message", "Answer updated and validated!");
     }
+
 
     @PostMapping("/checkValidatedMessages")
     @ResponseBody
