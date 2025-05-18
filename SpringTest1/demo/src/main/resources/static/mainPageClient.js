@@ -3,10 +3,23 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     if (!sessionStorage.getItem("conversationId")) {
-        sessionStorage.setItem("conversationId", "1");
+        fetch('/getLatestConversationId', {  //aici trebuie facut un controller
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: sessionStorage.getItem("username") })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const nextId = (parseInt(data.latestConversationId || "0") + 1).toString();
+                sessionStorage.setItem("conversationId", nextId);
+            })
+            .catch(err => {
+                console.error("Error fetching conversation ID:", err);
+                sessionStorage.setItem("conversationId", "1");
+            });
     }
-
-
 
     const questionInput = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
@@ -18,6 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    const userIdDisplay = document.getElementById("userIdDisplay");
+
+    if (userIdDisplay && username) {
+        userIdDisplay.textContent = `User ID: ${username}`;
+    }
+
     const sendBtn = document.getElementById("sendBtn");
     const logoutBtn = document.getElementById("logout");
     const newConversationBtn = document.getElementById("newConversation");
@@ -25,14 +44,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let hasSentFirstMessage = false;
 
+    if (sessionStorage.getItem("hasSentFirstMessage") === null) {
+        setUserSentMessage(false);
+    }
+
+
+    function setUserSentMessage(value) {
+        sessionStorage.setItem("hasSentFirstMessage", value ? "true" : "false");
+    }
+
+    function hasUserSentMessage() {
+        return sessionStorage.getItem("hasSentFirstMessage") === "true";
+    }
+
+
+
     function handleSend() {
         const question = questionInput.value.trim();
         if (!question) return;
 
-        if (!hasSentFirstMessage) {
+        if (!hasUserSentMessage()) {
             const welcomeEl = document.getElementById("welcome");
             if (welcomeEl) welcomeEl.classList.add("hidden");
-            hasSentFirstMessage = true;
+            setUserSentMessage(true);
         }
 
         sendQuestion(question);
@@ -52,15 +86,18 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("conversationId");
+        sessionStorage.removeItem("hasSentFirstMessage");
         window.location.href = "/login"; //aici trebuie schimbat pathul!!
     })
 
     newConversationBtn.addEventListener("click", () => {
-        let currentId = parseInt(sessionStorage.getItem("conversationId") || "1");
-        sessionStorage.setItem("conversationId", (currentId + 1).toString());
-
-        window.location.href = "/mainPageClient";  //aici trebuie schimbat pathul!!
-    })
+        if (hasUserSentMessage()) {
+            let currentId = parseInt(sessionStorage.getItem("conversationId") || "0");
+            sessionStorage.setItem("conversationId", (currentId + 1).toString());
+            setUserSentMessage(false);
+        }
+        window.location.href = "/mainPageClient";
+    });
 
     historyBtn.addEventListener("click", () => {
         window.location.href = "/showHistory";
@@ -77,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const answerEl = document.createElement("article");
         answerEl.className = "message answer";
         answerEl.textContent = "Waiting for response...";
-        answerEl.dataset.validation = "0"; 
+        answerEl.dataset.validation = "0";
         answerEl.dataset.question = questionText;
 
         const message = document.createElement("div");
@@ -92,10 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
             answerElement: answerEl,
             validation: "0"
         });
-    
+
         getAnswer(questionText, answerEl, message);
         scrollToBottom();
-    
+
         if (!window.validationInterval) {
             startValidationPolling();
         }
@@ -127,9 +164,9 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(data => {
                 answerEl.textContent = `A: ${data.answer}`;
-                answerEl.dataset.validation = "0"; 
-                answerEl.dataset.question = question; 
-                
+                answerEl.dataset.validation = "0";
+                answerEl.dataset.question = question;
+
                 if (messageDiv && messageValidationMap.has(messageDiv)) {
                     messageValidationMap.get(messageDiv).validation = "0";
                 }
@@ -145,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.validationInterval = setInterval(() => {
             const conversationId = sessionStorage.getItem("conversationId");
             const username = sessionStorage.getItem("username");
-            
+
             fetch('/checkValidatedMessages', {
                 method: 'POST',
                 headers: {
@@ -157,18 +194,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     conversationId: conversationId
                 })
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error("Invalid data format received");
+                    }
+
                     data.forEach(validatedMessage => {
                         document.querySelectorAll('.message .answer').forEach(answerEl => {
-                            if (answerEl.dataset.validation === "0" && validatedMessage.validation === "1") {
+                            const matchingQuestion = answerEl.dataset.question === validatedMessage.question;
+                            const needsValidation = answerEl.dataset.validation === "0";
+                            const isNowValidated = validatedMessage.validation === "1";
+
+                            if (matchingQuestion && needsValidation && isNowValidated) {
                                 answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
                                 answerEl.dataset.validation = "1";
                                 answerEl.classList.add("validated answer");
-                                
+
                                 const messageDiv = answerEl.closest('.message');
-                                if (messageValidationMap.has(messageDiv)) {
+                                if (messageDiv && messageValidationMap.has(messageDiv)) {
                                     messageValidationMap.get(messageDiv).validation = "1";
+                                    messageValidationMap.get(messageDiv).answer = validatedMessage.answer;
                                 }
                             }
                         });
