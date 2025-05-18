@@ -109,7 +109,56 @@ public class MessageController {
         return Map.of("message", "Question marked as checked");
     }
 
+    @PostMapping("/qa/updateAnswer")
+    @ResponseBody
+    public Map<String, String> updateExpertAnswer(@RequestBody Map<String, Object> payload) {
+        Long questionId = Long.valueOf(payload.get("id").toString());
+        String updatedAnswer = payload.get("updatedAnswer").toString();
+        String username = payload.get("username").toString();
 
+        Conversation conversation = messageService.getConversationById(questionId);
+        if (conversation == null) {
+            return Map.of("message", "Conversation not found");
+        }
+        // Actualizare raspuns si marcare ca valifat
+        conversation.setUpdatedResponse(updatedAnswer);
+        conversation.setChecked(true);
+        messageService.saveConversation(conversation);
+
+        return Map.of("message", "Answer updated and validated!");
+    }
+
+    @PostMapping("/checkValidatedMessages")
+    @ResponseBody
+    public List<Map<String, Object>> checkValidatedMessages(@RequestBody Map<String, Object> payload) {
+        String username = payload.get("username").toString();
+        Integer conversationId = Integer.valueOf(payload.get("conversationId").toString());
+
+        List<Conversation> validated = messageService.getValidatedMessages(username, conversationId);
+
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Conversation c : validated) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("question", c.getQuestion());
+            map.put("answer", c.getAnswer());
+            map.put("validation", c.getChecked() ? "1" : "0");
+            result.add(map);
+        }
+        return result;
+    }
+
+    @PostMapping("/conversationID")
+    @ResponseBody
+    public Map<String, Object> getLastConversationId(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        Integer lastConversationId = messageService.getMaxConversationIdByUser(username);
+        return Map.of(
+                "username", username,
+                "lastConversationId", lastConversationId != null ? lastConversationId : 0
+        );
+    }
 
 
 //    public String sendMessage(
