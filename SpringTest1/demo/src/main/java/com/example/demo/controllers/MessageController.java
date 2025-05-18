@@ -121,7 +121,7 @@ public class MessageController {
             return Map.of("message", "Conversation not found");
         }
         // Actualizare raspuns si marcare ca valifat
-        conversation.setAnswer(updatedAnswer);
+        conversation.setUpdatedResponse(updatedAnswer);
         conversation.setChecked(true);
         messageService.saveConversation(conversation);
 
@@ -147,6 +147,17 @@ public class MessageController {
             result.add(map);
         }
         return result;
+    }
+
+    @PostMapping("/conversationID")
+    @ResponseBody
+    public Map<String, Object> getLastConversationId(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        Integer lastConversationId = messageService.getMaxConversationIdByUser(username);
+        return Map.of(
+                "username", username,
+                "lastConversationId", lastConversationId != null ? lastConversationId : 0
+        );
     }
 
 
