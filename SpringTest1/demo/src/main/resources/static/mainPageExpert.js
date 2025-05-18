@@ -160,19 +160,15 @@ document.addEventListener("DOMContentLoaded", () => {
      * @param {HTMLElement} elementToRemove - The DOM element to remove
      */
     function submitAnswer(id, updatedAnswer, elementToRemove) {
-        if (!updatedAnswer) {
-            alert("Answer cannot be empty!");
-            return;
-        }
 
-        const originalAnswer = elementToRemove.querySelector("textarea").defaultValue.trim();
+        const textarea = elementToRemove.querySelector("textarea");
+        const originalAnswer = textarea.dataset.original?.trim() || "";
 
         if (!updatedAnswer) {
             alert("Answer cannot be empty!");
             return;
         }
 
-        // If the updated answer is the same as the original, send null
         const payloadAnswer = updatedAnswer === originalAnswer ? null : updatedAnswer;
 
         fetch("/qa/updateAnswer", {
