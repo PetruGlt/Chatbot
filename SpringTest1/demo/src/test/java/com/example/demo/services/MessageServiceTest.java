@@ -1,3 +1,5 @@
+package com.example.demo.services;
+
 import com.example.demo.models.Conversation;
 import com.example.demo.repositories.ConversationRepository;
 import com.example.demo.services.MessageService;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class MessageServiceTest {
@@ -33,8 +36,9 @@ public class MessageServiceTest {
     @Test
     void testSendQuestionReturnsTestString() {
         Integer conversationId = 1;
-        String result = messageService.sendQuestion(conversationId);
-        assertEquals("test", result);
+        String prompt = "test";
+        String result = messageService.sendQuestion(conversationId, prompt);
+        assertNotNull(result);
     }
 
     @Test

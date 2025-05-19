@@ -27,16 +27,15 @@ public class MessageController {
     @PostMapping("/chatbot/ask")
     @ResponseBody//Frontul trimite si asteapta JSON
     public Map<String, String> sendMessage(@RequestBody QuestionObject dto) {
+
+        String answer = messageService.sendQuestion(dto.conversationId, dto.question);
       Conversation conversation = new Conversation();
       conversation.setUser(dto.username);
       conversation.setQuestion(dto.question);
       conversation.setConversationId(dto.conversationId);
-      conversation.setAnswer("");
       conversation.setChecked(false);
-
-      // update to avoid double saving:
-      String answer = messageService.sendQuestion(dto.conversationId);
       conversation.setAnswer(answer);
+
       messageService.saveConversation(conversation);
 
       return Map.of("answer", answer);
