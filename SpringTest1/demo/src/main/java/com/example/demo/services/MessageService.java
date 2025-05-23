@@ -65,4 +65,8 @@ public class MessageService {
     public Integer getMaxConversationIdByUser(String username) {
         return conversationRepository.findMaxConversationIdByUser(username);
     }
+
+    public List<Conversation> getMessagesByConversation(Integer conversationId) {
+        return conversationRepository.getConversationByConversationId(conversationId);
+    }
 }
