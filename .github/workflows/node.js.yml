@@ -98,15 +98,16 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DATABASE_URL: ${{ secrets.DATABASE_ENV }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          GOOGLE_AI_MODULE: ${{ secrets.GOOGLE_AI_MODULE }}
+          GOOGLE_AI_MODEL: ${{ secrets.GOOGLE_AI_MODEL }}
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
             touch .env &&
-            echo $GOOGLE_API_KEY > .env &&
-            echo $GOOGLE_AI_MODULE > .env  &&
-            echo $DATABASE_URL > .env"
+            echo $GOOGLE_API_KEY >> .env &&
+            echo $GOOGLE_AI_MODEL >> .env  &&
+            echo $DATABASE_URL >> .env
+            "
           
 
       - name: Start Node.js App on Server
