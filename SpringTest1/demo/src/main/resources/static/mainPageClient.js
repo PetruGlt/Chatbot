@@ -1,55 +1,9 @@
 //am pus un comentariu in dreptul liniilor unde path ul ar trebui schimbat!
 
-function scrollToBottom() {
-    const conversation = document.querySelector('.conversation');
-    conversation.scrollTop = conversation.scrollHeight;
-}
-
-const loadMessages = async (container, conversationId) => {
-    try{
-        const data = await fetch(`/get-messages?conversationId=${conversationId}`);
-        const messages = await data.json();
-        if(messages.length > 0){
-            document.getElementById("welcome").remove();
-        }
-
-        messages.forEach(msg => {
-
-            const questionText = msg.question;
-            const answerText = msg.answer;
-
-            const questionEl = document.createElement("article");
-
-            questionEl.className = "message question";
-            questionEl.textContent = `Q: ${questionText}`;
-
-            const answerEl = document.createElement("article");
-            answerEl.className = "message answer";
-            answerEl.textContent = answerText;
-            answerEl.dataset.question = questionText;
-
-            const message = document.createElement("div");
-            message.classList.add("message");
-            message.dataset.conversationId = sessionStorage.getItem("conversationId");
-
-            message.appendChild(questionEl);
-            message.appendChild(answerEl);
-            container.appendChild(message);
-
-        });
-        scrollToBottom();
-
-    }catch (e) {
-        console.warn(e);
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    const exists = sessionStorage.getItem("conversationId") !== null;
-
-    if (!exists) {
-        fetch('/get-latest-conversationId', {  //aici trebuie facut un controller
+    if (!sessionStorage.getItem("conversationId")) {
+        fetch('/getLatestConversationId', {  //aici trebuie facut un controller
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -69,8 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const questionInput = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
-    const conversationId = sessionStorage.getItem("conversationId")
-    loadMessages(chatBox, conversationId);
 
     const username = sessionStorage.getItem("username");
 
@@ -279,7 +231,10 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(window.validationInterval);
     });
 
-
+    function scrollToBottom() {
+        const conversation = document.querySelector('.conversation');
+        conversation.scrollTop = conversation.scrollHeight;
+    }
 
     //asta e doar de test
     //     console.log(question);
