@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     if (!sessionStorage.getItem("conversationId")) {
-        fetch('/getLatestConversationId', {  //aici trebuie facut un controller
+        fetch('/conversationID', {  //aici trebuie facut un controller
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
