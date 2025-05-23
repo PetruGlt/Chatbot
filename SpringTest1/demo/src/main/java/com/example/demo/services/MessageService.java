@@ -1,47 +1,42 @@
 package com.example.demo.services;
 
+import com.example.demo.models.ChatbotResponse;
 import com.example.demo.models.Conversation;
 import com.example.demo.repositories.ConversationRepository;
 import com.example.demo.utils.ConversationSummaryDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriUtils;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class MessageService {
-
-    private final WebClient webClient;
     private final ConversationRepository conversationRepository;
     private final ResponseService responseService;
 
     public MessageService(ConversationRepository conversationRepository, ResponseService responseService) {
         this.conversationRepository = conversationRepository;
         this.responseService = responseService;
-        this.webClient = WebClient.create("http://localhost:3000"); // baza URL
     }
 
-    public String sendQuestion(Integer conversationId) {
-        // Trimite întrebarea la API
-        Map<String, Integer> aiRequest = Map.of("conversationId", conversationId);
-    //   String encoded = UriUtils.encodeQueryParam(question, StandardCharsets.UTF_8);
-      //  String uri = "/chatbot/ask?question=" + encoded;
+    public String sendQuestion(Integer conversationId, String prompt) {
+        String url = "http://localhost:3000/chatbot/ask";
 
-      /*  return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/chatbot/ask")
-                        .queryParam("conversationId", conversationId)
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-*/
-        // Trimite un raspuns
-        String response = "test";
-        return response;
-        }
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("conversationId", conversationId);
+        requestBody.put("prompt", prompt);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<ChatbotResponse> response = restTemplate.postForEntity(url, requestEntity, ChatbotResponse.class);
+
+        return response.getBody().getAnswer();
+    }
 
     public Conversation saveConversation(Conversation conversation) {
         return conversationRepository.save(conversation);

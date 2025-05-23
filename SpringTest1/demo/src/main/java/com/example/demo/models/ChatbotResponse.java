@@ -1,0 +1,13 @@
+package com.example.demo.models;
+
+public class ChatbotResponse {
+    private String answer;
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+}
