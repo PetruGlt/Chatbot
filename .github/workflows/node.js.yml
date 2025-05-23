@@ -109,17 +109,30 @@ jobs:
             echo $GOOGLE_AI_MODEL >> .env  &&
             echo $DATABASE_URL >> .env
             "
-          
+
+      - name: Check permissions
+        env: 
+          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "
+            which node
+            which npm
+          "
+
+        
 
       - name: Start Node.js App on Server
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DATABASE_URL: ${{ secrets.DATABASE_ENV }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_AI_MODEL: ${{ secrets.GOOGLE_AI_MODEL }}
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           echo "Starting the Node.js app on the server..."
-          ssh -t $DEPLOY_USER@$DEPLOY_SERVER "
-            echo 'Conexiune stabilita'
+          ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
             pkill -f 'node' || true &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npm install && 
