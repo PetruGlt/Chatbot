@@ -104,6 +104,7 @@ jobs:
           ssh $DEPLOY_USER@$DEPLOY_SERVER "
             cd $DEPLOY_PATH &&
             touch .env &&
+            chmod 7777 .env &&
             echo $GOOGLE_API_KEY >> .env &&
             echo $GOOGLE_AI_MODEL >> .env  &&
             echo $DATABASE_URL >> .env
@@ -117,7 +118,8 @@ jobs:
           DEPLOY_PATH: ~/Chatbot/aimodule
         run: |
           echo "Starting the Node.js app on the server..."
-          ssh $DEPLOY_USER@$DEPLOY_SERVER "
+          ssh -t $DEPLOY_USER@$DEPLOY_SERVER "
+            echo 'Conexiune stabilita'
             cd $DEPLOY_PATH &&
             pkill -f 'node' || true &&
             /home/founder/.nvm/versions/node/v23.11.0/bin/npm install && 
