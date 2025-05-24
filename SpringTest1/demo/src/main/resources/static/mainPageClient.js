@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const exists = sessionStorage.getItem("conversationId") !== null;
 
     if (!exists) {
-        fetch('/get-latest-conversationId', {  //aici trebuie facut un controller
+        fetch('/get-latest-conversationID', {  //aici trebuie facut un controller
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
