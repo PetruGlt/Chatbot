@@ -149,7 +149,7 @@ public class MessageController {
         return result;
     }
 
-    @PostMapping("/conversationID")
+    @PostMapping("/get-latest-onversationID")
     @ResponseBody
     public Map<String, Object> getLastConversationId(@RequestBody Map<String, String> payload) {
         String username = payload.get("username");
@@ -160,6 +160,25 @@ public class MessageController {
         );
     }
 
+
+    @GetMapping("/get-messages")
+    @ResponseBody
+    public List<Map<String, Object>> getMessages(@RequestParam Integer conversationId) {
+        List<Conversation> messages = messageService.getMessagesByConversation(conversationId);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Conversation c : messages) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("question", c.getQuestion());
+            map.put("answer", c.getAnswer());
+            map.put("user", c.getUser());
+            map.put("conversationId", c.getConversationId());
+            result.add(map);
+        }
+
+        return result;
+    }
 
 //    public String sendMessage(
 //            @RequestParam("question") String question,
