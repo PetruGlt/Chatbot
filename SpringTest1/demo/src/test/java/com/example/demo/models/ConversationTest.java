@@ -11,11 +11,11 @@ class ConversationTest {
     void testSetAndGetFields() {
         Conversation conv = new Conversation();
         conv.setUser("ana");
-        conv.setConversationId(1);
+        conv.setConversationId(Integer.valueOf(1));
         conv.setQuestion("Cum pot aplica pentru un credit?");
         conv.setAnswer("Acceseaza sectiunea CREDITE din aplicatie");
         conv.setUpdatedResponse("Actualizat");
-        conv.setChecked(true);
+        conv.setChecked(Boolean.TRUE);
 
         assertEquals("ana", conv.getUser());
         assertEquals(1, conv.getConversationId());
@@ -29,7 +29,7 @@ class ConversationTest {
     void testToStringContainsFields() {
         Conversation conv = new Conversation();
         conv.setUser("alex");
-        conv.setConversationId(2);
+        conv.setConversationId(Integer.valueOf(2));
         conv.setQuestion("Salut?");
         conv.setAnswer("Salut!");
 
