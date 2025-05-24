@@ -149,7 +149,7 @@ public class MessageController {
         return result;
     }
 
-    @PostMapping("/get-latest-onversationID")
+    @PostMapping("/get-latest-conversationID")
     @ResponseBody
     public Map<String, Object> getLastConversationId(@RequestBody Map<String, String> payload) {
         String username = payload.get("username");
