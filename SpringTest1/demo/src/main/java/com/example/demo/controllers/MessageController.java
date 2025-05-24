@@ -144,6 +144,7 @@ public class MessageController {
             map.put("question", c.getQuestion());
             map.put("answer", c.getAnswer());
             map.put("validation", c.getChecked() ? "1" : "0");
+            map.put("validatedAnswer", c.getUpdatedResponse());
             result.add(map);
         }
         return result;
@@ -174,6 +175,7 @@ public class MessageController {
             map.put("answer", c.getAnswer());
             map.put("user", c.getUser());
             map.put("conversationId", c.getConversationId());
+            map.put("validatedAnswer", c.getUpdatedResponse());
             result.add(map);
         }
 
