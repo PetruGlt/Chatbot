@@ -1,31 +1,90 @@
-document.addEventListener("DOMContentLoaded", async () => {
+function scrollToBottom() {
+    const conversation = document.querySelector('.conversation');
+    conversation.scrollTop = conversation.scrollHeight;
+}
+
+const loadMessages = async (container, conversationId) => {
+    if (conversationId!=null) {
+        try {
+            const data = await fetch(`/get-messages?conversationId=${conversationId}`);
+            const messages = await data.json();
+            if (messages.length > 0) {
+                document.getElementById("welcome").remove();
+            }
+
+            messages.forEach(msg => {
+
+                const questionText = msg.question;
+                let answerText;
+                if(msg.validatedAnswer == null){
+                    answerText = msg.answer;
+                }
+                else{
+                    answerText = msg.validatedAnswer;
+                }
+
+
+                const questionEl = document.createElement("article");
+
+                questionEl.className = "message question";
+                questionEl.textContent = `Q: ${questionText}`;
+
+                const answerEl = document.createElement("article");
+                answerEl.className = "message answer";
+                answerEl.textContent = answerText;
+                answerEl.dataset.question = questionText;
+
+                const message = document.createElement("div");
+                message.classList.add("message");
+                message.dataset.conversationId = sessionStorage.getItem("conversationId");
+
+                message.appendChild(questionEl);
+                message.appendChild(answerEl);
+                container.appendChild(message);
+                sessionStorage.setItem("hasSentFirstMessage", "true");
+            });
+            scrollToBottom();
+
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const exists = sessionStorage.getItem("conversationId") !== null;
+
+    if (!exists) {
+        fetch('/get-latest-conversationID', {  //aici trebuie facut un controller
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: sessionStorage.getItem("username") })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const nextId = (parseInt(data.lastConversationId || "0") + 1).toString();
+                sessionStorage.setItem("conversationId", nextId);
+            })
+            .catch(err => {
+                console.error("Error fetching conversation ID:", err);
+                sessionStorage.setItem("conversationId", "1");
+            });
+    }
+
+    const questionInput = document.getElementById("questionInput");
+    const chatBox = document.getElementById("chatBox");
+    const conversationId = sessionStorage.getItem("conversationId")
+    loadMessages(chatBox, conversationId);
+
     const username = sessionStorage.getItem("username");
-    let conversationId;
 
     if (!username) {
         window.location.href = "/login";
         return;
     }
-
-    try {
-        const res = await fetch('/conversationID', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({username})
-        });
-        const data = await res.json();
-        const nextId = (parseInt(data.lastConversationId || "0") + 1).toString();
-        conversationId = nextId;
-        // sessionStorage.setItem("conversationId", nextId);
-    } catch (err) {
-        console.error("Error fetching conversation ID:", err);
-        sessionStorage.setItem("conversationId", "1");
-    }
-
-    const questionInput = document.getElementById("questionInput");
-    const chatBox = document.getElementById("chatBox");
 
     const userIdDisplay = document.getElementById("userIdDisplay");
 
@@ -38,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const newConversationBtn = document.getElementById("newConversation");
     const historyBtn = document.getElementById("history");
 
+    let hasSentFirstMessage = false;
 
     if (sessionStorage.getItem("hasSentFirstMessage") === null) {
         setUserSentMessage(false);
@@ -51,6 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function hasUserSentMessage() {
         return sessionStorage.getItem("hasSentFirstMessage") === "true";
     }
+
 
 
     function handleSend() {
@@ -84,9 +145,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "/login"; //aici trebuie schimbat pathul!!
     })
 
-
     newConversationBtn.addEventListener("click", () => {
-        window.location.href = "/mainPageClient";
+        fetch('/get-latest-conversationID', {  //aici trebuie facut un controller
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: sessionStorage.getItem("username") })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (hasUserSentMessage()) {
+                    const nextId = (parseInt(data.lastConversationId || "0") + 1).toString();
+                    sessionStorage.setItem("conversationId", nextId);
+                    setUserSentMessage(false);
+                }
+                window.location.href = "/mainPageClient";
+            })
+            .catch(err => {
+                console.error("Error fetching conversation ID:", err);
+                sessionStorage.setItem("conversationId", "1");
+            });
+        // let currentId = (parseInt(data.lastConversationId || "0") + 1).toString();
+
+        // sessionStorage.setItem("conversationId", (currentId + 1).toString());
+        //
+        // setUserSentMessage(false);
     });
 
     historyBtn.addEventListener("click", () => {
@@ -129,6 +213,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getAnswer(question, answerEl, messageDiv) {
+        const conversationId = sessionStorage.getItem("conversationId");
+
+        //se trimit username-ul, conversationId si question
+        //asteptam un answer
+        //trimitem un json
+        //asteptam un json
 
         fetch('/chatbot/ask', {
             method: 'POST',
@@ -194,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             const isNowValidated = validatedMessage.validation === "1";
 
                             if (matchingQuestion && needsValidation && isNowValidated) {
-                                answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
+                                answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
                                 answerEl.dataset.validation = "1";
                                 answerEl.classList.add("validated answer");
 
@@ -214,10 +304,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.addEventListener('beforeunload', () => {
         clearInterval(window.validationInterval);
     });
-
-    function scrollToBottom() {
-        const conversation = document.querySelector('.conversation');
-        conversation.scrollTop = conversation.scrollHeight;
-    }
 
 });

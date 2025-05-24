@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     qaList.appendChild(card);
     // });
 
-
+  
     //--- Fetch Q&A Data ---
     fetch("/questions", { // ! probabil alt nume aici !
         method: "POST",
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.innerHTML = `
                     <h3>Q&A ${qa.id}</h3>
                     <p><strong>Q:</strong> ${qa.question}</p>
-                    <textarea>${qa.answer}</textarea>
+                    <textarea data-original="${qa.answer}">${qa.answer}</textarea>
                     <p class="hint">Press Enter to submit (will validate the answer)</p>
                     <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                 `;
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     card.innerHTML = `
                         <h3>Q&A ${qa.id}</h3>
                         <p><strong>Q:</strong> ${qa.question}</p>
-                        <textarea>${qa.answer}</textarea>
+                        <textarea data-original="${qa.answer}"> ${qa.answer}</textarea>
                         <p class="hint">Press Enter to submit (will validate the answer)</p>
                         <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                     `;
@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const textarea = elementToRemove.querySelector("textarea");
         const originalAnswer = textarea.dataset.original?.trim() || "";
 
+        console.log("aici e origina: " + originalAnswer);
         if (!updatedAnswer) {
             alert("Answer cannot be empty!");
             return;
@@ -182,24 +183,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
-                id: id, 
+            body: JSON.stringify({
+                id: id,
                 updatedAnswer: payloadAnswer,
                 username: username,
                 validation: "1"
             })
         })
             .then(response => {
-                if (!response.ok) throw new Error("Failed to submit answer");
+                if (!response.ok) {
+                    console.error("Response not OK:", response.status, response.statusText);
+                    throw new Error("Failed to submit answer");
+                }
                 return response.json();
             })
             .then(data => {
-                if(data.success) {
+                if (data.success) {
                     elementToRemove.remove();
                     console.log(`Answer submitted for ID ${id}`);
                     reloadContent();
-                }
-                else {
+                } else {
                     throw new Error(data.message || "Validation failed");
                 }
             })
