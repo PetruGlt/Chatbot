@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +30,21 @@ public class RegistrationControllerTest {
   @Test
   public void testRegisterUser_success() throws Exception {
     String json = """
-            { "username": "testuser12",
-              "password": "parola123",
-              "access": "USER"
-            }
-        """;
+        {
+          "username": "testuser12",
+          "password": "parola123",
+          "access": "USER"
+        }
+    """;
 
     mockMvc.perform(post("/register")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.success").value(Boolean.TRUE))
             .andExpect(jsonPath("$.message").value("Cont creat cu succes!"));
   }
+
 
   @Test
   public void testRegisterUser_duplicateUsername() throws Exception {
@@ -61,7 +65,7 @@ public class RegistrationControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json))
             .andExpect(status().isConflict())
-            .andExpect(jsonPath("$.success").value(false))
+            .andExpect(jsonPath("$.success").value(Boolean.FALSE))
             .andExpect(jsonPath("$.message", containsString("Username-ul este deja luat")));
   }
 
