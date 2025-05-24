@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const qaList = document.getElementById("qaList");
     const logoutBtn = document.getElementById("logout");
     const username = sessionStorage.getItem("username");
+    const haluRapBtn = document.getElementById("halurap");
 
     if (!username) {
         window.location.href = "/login";
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     //--- Mock Data for Testing ---
-    // Uncomment for standalone testing without a backend
+    //Uncomment for standalone testing without a backend
     // const mockQA = [
     //     { id: 101, question: "How do I update my billing address?", answer: "Visit the billing section in your account." },
     //     { id: 102, question: "Is international shipping available?", answer: "Yes, we ship to over 100 countries." },
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     <p class="hint">Press Enter to submit (will validate the answer)</p>
     //     <input type="hidden" class="validation-code" value="0">
     // `;
-
+    //
     //     const textarea = card.querySelector("textarea");
     //     textarea.addEventListener("keydown", (e) => {
     //         if (e.key === "Enter" && !e.shiftKey) {
@@ -44,14 +45,14 @@ document.addEventListener("DOMContentLoaded", () => {
     //             submitAnswer(qa.id, updatedAnswer, card);
     //         }
     //     });
-
+    //
     //     card.addEventListener("click", (e) => {
     //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
     //             sessionStorage.setItem("qaId", qa.id);
     //             window.location.href = "/qaDetail"; // Path to Q&A detail page
     //         }
     //     });
-
+    //
     //     qaList.appendChild(card);
     // });
 
@@ -150,6 +151,10 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("qaId");
         window.location.href = "/login";
+    });
+
+    haluRapBtn.addEventListener("click", () => {
+        window.location.href = "/templates/haluPageExpert.html";
     });
 
     // --- Submit Answer Function ---
