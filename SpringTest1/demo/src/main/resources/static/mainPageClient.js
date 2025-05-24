@@ -1,35 +1,31 @@
-//am pus un comentariu in dreptul liniilor unde path ul ar trebui schimbat!
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    if (!sessionStorage.getItem("conversationId")) {
-        fetch('/conversationID', {  //aici trebuie facut un controller
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: sessionStorage.getItem("username") })
-        })
-            .then(res => res.json())
-            .then(data => {
-                const nextId = (parseInt(data.latestConversationId || "0") + 1).toString();
-                sessionStorage.setItem("conversationId", nextId);
-            })
-            .catch(err => {
-                console.error("Error fetching conversation ID:", err);
-                sessionStorage.setItem("conversationId", "1");
-            });
-    }
-
-    const questionInput = document.getElementById("questionInput");
-    const chatBox = document.getElementById("chatBox");
-
+document.addEventListener("DOMContentLoaded", async () => {
     const username = sessionStorage.getItem("username");
+    let conversationId;
 
     if (!username) {
         window.location.href = "/login";
         return;
     }
+
+    try {
+        const res = await fetch('/conversationID', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username})
+        });
+        const data = await res.json();
+        const nextId = (parseInt(data.lastConversationId || "0") + 1).toString();
+        conversationId = nextId;
+        // sessionStorage.setItem("conversationId", nextId);
+    } catch (err) {
+        console.error("Error fetching conversation ID:", err);
+        sessionStorage.setItem("conversationId", "1");
+    }
+
+    const questionInput = document.getElementById("questionInput");
+    const chatBox = document.getElementById("chatBox");
 
     const userIdDisplay = document.getElementById("userIdDisplay");
 
@@ -42,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const newConversationBtn = document.getElementById("newConversation");
     const historyBtn = document.getElementById("history");
 
-    let hasSentFirstMessage = false;
 
     if (sessionStorage.getItem("hasSentFirstMessage") === null) {
         setUserSentMessage(false);
@@ -56,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function hasUserSentMessage() {
         return sessionStorage.getItem("hasSentFirstMessage") === "true";
     }
-
 
 
     function handleSend() {
@@ -90,12 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/login"; //aici trebuie schimbat pathul!!
     })
 
+
     newConversationBtn.addEventListener("click", () => {
-        if (hasUserSentMessage()) {
-            let currentId = parseInt(sessionStorage.getItem("conversationId") || "0");
-            sessionStorage.setItem("conversationId", (currentId + 1).toString());
-            setUserSentMessage(false);
-        }
         window.location.href = "/mainPageClient";
     });
 
@@ -139,12 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getAnswer(question, answerEl, messageDiv) {
-        const conversationId = sessionStorage.getItem("conversationId");
-
-        //se trimit username-ul, conversationId si question
-        //asteptam un answer
-        //trimitem un json
-        //asteptam un json
 
         fetch('/chatbot/ask', {
             method: 'POST',
@@ -236,14 +220,4 @@ document.addEventListener("DOMContentLoaded", () => {
         conversation.scrollTop = conversation.scrollHeight;
     }
 
-    //asta e doar de test
-    //     console.log(question);
-    //     console.log("\n" + username);
-    //     console.log("\n" + conversationId);
-    //     setTimeout(() => {
-    //         //For now, just a mock response
-    //         const mockResponse = question;
-    //         answerEl.textContent = `A: ${mockResponse}`;
-    //     }, 1000);
-    // }
 });
