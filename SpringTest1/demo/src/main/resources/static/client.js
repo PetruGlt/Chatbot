@@ -27,6 +27,7 @@ class ClientLogin {
             }).then(response => {
                 if (response.redirected) {
                     sessionStorage.setItem("username", this.username);
+                    // await this.initializeConversationId();
                     window.location.href = response.url;
                 }
             })
