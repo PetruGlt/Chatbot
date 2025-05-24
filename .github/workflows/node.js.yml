@@ -92,7 +92,7 @@ jobs:
           rsync -avz --delete nodejs-app/ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
           
           echo "Deployed successfully!"
-      - name: env file
+      - name: .env file
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}

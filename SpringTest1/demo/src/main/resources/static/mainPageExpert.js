@@ -18,46 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    //--- Mock Data for Testing ---
-    // Uncomment for standalone testing without a backend
-    // const mockQA = [
-    //     { id: 101, question: "How do I update my billing address?", answer: "Visit the billing section in your account." },
-    //     { id: 102, question: "Is international shipping available?", answer: "Yes, we ship to over 100 countries." },
-    //     { id: 103, question: "Can I cancel my subscription?", answer: "Yes, you can cancel anytime from your profile." }
-    // ];
-    // mockQA.forEach(qa => {
-    // const card = document.createElement("div");
-    // card.className = "qa-card";
-    // card.innerHTML = `
-    //     <h3>Q&A ${qa.id}</h3>
-    //     <p><strong>Q:</strong> ${qa.question}</p>
-    //     <textarea>${qa.answer}</textarea>
-    //     <p class="hint">Press Enter to submit (will validate the answer)</p>
-    //     <input type="hidden" class="validation-code" value="0">
-    // `;
-
-    //     const textarea = card.querySelector("textarea");
-    //     textarea.addEventListener("keydown", (e) => {
-    //         if (e.key === "Enter" && !e.shiftKey) {
-    //             e.preventDefault();
-    //             const updatedAnswer = textarea.value.trim();
-    //             submitAnswer(qa.id, updatedAnswer, card);
-    //         }
-    //     });
-
-    //     card.addEventListener("click", (e) => {
-    //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
-    //             sessionStorage.setItem("qaId", qa.id);
-    //             window.location.href = "/qaDetail"; // Path to Q&A detail page
-    //         }
-    //     });
-
-    //     qaList.appendChild(card);
-    // });
-
-
-    //--- Fetch Q&A Data ---
-    fetch("/questions", { // ! probabil alt nume aici !
+    fetch("/questions", {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -82,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                 `;
 
-                // Add submit functionality to textarea
                 const textarea = card.querySelector("textarea");
                 textarea.addEventListener("keydown", (e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
@@ -126,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="hint">Press Enter to submit (will validate the answer)</p>
                         <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                     `;
-
                     const textarea = card.querySelector("textarea");
                     textarea.addEventListener("keydown", (e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
@@ -152,13 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/login";
     });
 
-    // --- Submit Answer Function ---
-    /**
-     * Submits an updated answer to the backend and removes the Q&A card
-     * @param {number} id - The ID of the Q&A item
-     * @param {string} updatedAnswer - The updated answer text
-     * @param {HTMLElement} elementToRemove - The DOM element to remove
-     */
+
     function submitAnswer(id, updatedAnswer, elementToRemove) {
 
         const textarea = elementToRemove.querySelector("textarea");
@@ -169,7 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // console.log(updatedAnswer);
+        // console.log("ce e aici: " + originalAnswer);
         const payloadAnswer = updatedAnswer === originalAnswer ? null : updatedAnswer;
+        // console.log("ce e aici: " + payloadAnswer);
 
         fetch("/qa/updateAnswer", {
             method: "POST",
