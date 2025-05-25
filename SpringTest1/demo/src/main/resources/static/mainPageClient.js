@@ -31,7 +31,7 @@ const loadMessages = async (container, conversationId) => {
 
                 const answerEl = document.createElement("article");
                 answerEl.className = "message answer";
-                answerEl.textContent = answerText;
+                answerEl.textContent = `A: ${answerText}`;
                 answerEl.dataset.question = questionText;
 
                 const message = document.createElement("div");
