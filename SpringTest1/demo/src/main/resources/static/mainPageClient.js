@@ -31,7 +31,7 @@ const loadMessages = async (container, conversationId) => {
 
                 const answerEl = document.createElement("article");
                 answerEl.className = "message answer";
-                answerEl.textContent = `A: ${answerText}`;
+                answerEl.textContent = answerText;
                 answerEl.dataset.question = questionText;
 
                 const message = document.createElement("div");
@@ -288,11 +288,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
                                 }
                                 else{
-                                answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
+                                    answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
                                 }
                                 answerEl.dataset.validation = "1";
-                                answerEl.classList.add("validated answer");
-                                answerEl.className = "validated answer";
+                                answerEl.className = "message validated answer";
 
                                 const messageDiv = answerEl.closest('.message');
                                 if (messageDiv && messageValidationMap.has(messageDiv)) {
