@@ -28,7 +28,7 @@ public class MessageController {
     @ResponseBody//Frontul trimite si asteapta JSON
     public Map<String, String> sendMessage(@RequestBody QuestionObject dto) {
 
-        String answer = messageService.sendQuestion(dto.conversationId, dto.question);
+        String answer = messageService.sendQuestion(dto.conversationId, dto.question, dto.username);
       Conversation conversation = new Conversation();
       conversation.setUser(dto.username);
       conversation.setQuestion(dto.question);

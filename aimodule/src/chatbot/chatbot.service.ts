@@ -44,8 +44,10 @@ export class ChatbotService {
             message: prompt
         });
 
-        if(response.candidates[0].finishReason == 'SAFETY')
+        if(response.candidates[0].finishReason == 'SAFETY') {
+            console.log(response.candidates)
             return 'Imi pare rau, nu pot raspunde la aceasta intrebare.';
+        }
 
         const output = response.candidates[0].content.parts.map(obj => obj.text).join('');
         

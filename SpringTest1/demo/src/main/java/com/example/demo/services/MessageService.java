@@ -20,12 +20,13 @@ public class MessageService {
         this.responseService = responseService;
     }
 
-    public String sendQuestion(Integer conversationId, String prompt) {
+    public String sendQuestion(Integer conversationId, String prompt, String userName) {
         String url = "http://localhost:3000/chatbot/ask";
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("conversationId", conversationId);
         requestBody.put("prompt", prompt);
+        requestBody.put("userName", userName);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -36,6 +37,14 @@ public class MessageService {
         ResponseEntity<ChatbotResponse> response = restTemplate.postForEntity(url, requestEntity, ChatbotResponse.class);
 
         return response.getBody().getAnswer();
+    }
+
+    public Map<String, Long> getStatistics() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("allAnswers", conversationRepository.count());
+        stats.put("validatedAnswers", conversationRepository.countDistinctByCheckedTrue());
+        stats.put("correctAnswers", conversationRepository.countDistinctByUpdatedResponseNull());
+        return stats;
     }
 
     public Conversation saveConversation(Conversation conversation) {

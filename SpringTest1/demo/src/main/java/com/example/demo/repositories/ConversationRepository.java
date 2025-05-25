@@ -11,6 +11,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     List<Conversation> findByuser(String user);
     List<Conversation> findByConversationId(Integer conversationId);
     List<Conversation> findByCheckedFalse();
+    Long countDistinctByCheckedTrue();
+    Long countDistinctByUpdatedResponseNull();
 
     @Query("SELECT new com.example.demo.utils.ConversationSummaryDTO(c.conversationId, c.question, c.answer) " +
             "FROM Conversation c " +

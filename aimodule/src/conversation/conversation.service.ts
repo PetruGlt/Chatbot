@@ -6,9 +6,12 @@ export class ConversationService {
 
     constructor(private readonly prisma: PrismaService) {}
 
-    public async getHistory(conversationId) {
+    public async getHistory(conversationId, userName) {
         const rows = await this.prisma.conversation_history.findMany({
-            where: { conversation_id: conversationId },
+            where: { 
+                conversation_id: conversationId,
+                user: userName
+            },
             orderBy: { id: 'asc' }
         });
         
