@@ -158,7 +158,7 @@ header {
     text-align: left;
 }
 
-.valiated.answer {
+.message.validated.answer {
     align-self: flex-start;
     background-color: rgba(79, 247, 169, 0.377);
     text-align: left;
