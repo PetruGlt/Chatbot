@@ -41,9 +41,9 @@ public class MessageService {
 
     public Map<String, Long> getStatistics() {
         Map<String, Long> stats = new HashMap<>();
-        stats.put("allAnswers", conversationRepository.count());
+        stats.put("allAnswers", conversationRepository.countDistinctByAnswerNotNull());
         stats.put("validatedAnswers", conversationRepository.countDistinctByCheckedTrue());
-        stats.put("correctAnswers", conversationRepository.countDistinctByUpdatedResponseNull());
+        stats.put("correctAnswers", conversationRepository.countDistinctByCheckedTrueAndUpdatedResponseNull());
         return stats;
     }
 
