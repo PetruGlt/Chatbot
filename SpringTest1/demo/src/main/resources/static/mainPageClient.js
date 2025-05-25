@@ -284,7 +284,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             const isNowValidated = validatedMessage.validation === "1";
 
                             if (matchingQuestion && needsValidation && isNowValidated) {
+                                if (validatedMessage.validatedAnswer==null){
+                                    answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
+                                }
+                                else{
                                 answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
+                                }
                                 answerEl.dataset.validation = "1";
                                 answerEl.classList.add("validated answer");
                                 answerEl.className = "validated answer";
