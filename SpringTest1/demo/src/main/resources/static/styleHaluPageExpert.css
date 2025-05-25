@@ -40,7 +40,7 @@ aside {
     font-weight: bold;
 }
 
-#logout{
+#back{
     background: transparent;
     color: #405d27;
     border: none;
@@ -54,27 +54,7 @@ aside {
     transition: color 0.2s;
 }
 
-#halurap{
-    background: transparent;
-    color: #405d27;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 35px;
-    font-family: 'Verdana';
-    font-weight: bold;
-    transition: color 0.2s;
-}
-
-#logout:hover{
-    transition-timing-function: ease-in-out;
-    transition: color 0.2s;
-    color: #8aa277;
-}
-
-#halurap:hover{
+#back:hover{
     transition-timing-function: ease-in-out;
     transition: color 0.2s;
     color: #8aa277;

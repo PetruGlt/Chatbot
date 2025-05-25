@@ -8,8 +8,8 @@ body {
 .container {
     display: grid;
     grid-template-areas: "sidebar content";
-    grid-template-columns: 1fr 3fr;
-    height: 100vh;
+    grid-template-columns: minmax(250px, 350px) 1fr;
+    min-height: 100vh;
     width: 100vw;
     font-family: sans-serif;
     box-sizing: border-box;
@@ -17,19 +17,28 @@ body {
 
 aside {
     width: 350px;
-    justify-content: center;
     grid-area: sidebar;
     border-right: 1px solid #405d27;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 10px;
     padding: 20px;
-    position: fixed;
     height: 100vh;
+    position: fixed;
     overflow-y: auto;
 }
 
-#newConversation{
+.user-id-display {
+    font-size: clamp(16px, 2vw, 20px);
+    color: #8aa277;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Verdana';
+    font-weight: bold;
+}
+
+#newConversation, #history, #logout {
     background: transparent;
     color: #405d27;
     border: none;
@@ -37,47 +46,17 @@ aside {
     width: 100%;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 35px;
-    font-family: 'Verdana';
-    font-weight: bold;
-}
-
-#history{
-    background: transparent;
-    color: #8aa277;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 35px;
+    font-size: clamp(24px, 3vw, 35px);
     font-family: 'Verdana';
     font-weight: bold;
     transition: color 0.2s;
 }
 
-#logout{
-    background: transparent;
-    color: #405d27;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 35px;
-    font-family: 'Verdana';
-    font-weight: bold;
-    transition: color 0.2s;
-}
-
-#newConversation:hover{
-    transition-timing-function: ease-in-out;
-    transition: color 0.2s;
+#history {
     color: #8aa277;
 }
-#logout:hover{
-    transition-timing-function: ease-in-out;
-    transition: color 0.2s;
+
+#newConversation:hover, #logout:hover {
     color: #8aa277;
 }
 
@@ -88,6 +67,7 @@ main {
     padding: 20px;  
     height: calc(100vh - 40px);
     overflow-y: auto;
+    margin-left: 40px;
 }
 
 header {
@@ -95,7 +75,7 @@ header {
     background-color: transparent;
     color: #8aa277;
     text-align: center;
-    font-size: 50px;
+    font-size: clamp(30px, 5vw, 50px);
     font-family: 'Verdana';
     font-weight: bold;
     border-radius: 5px;
@@ -103,10 +83,11 @@ header {
 }
 
 .history-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     padding-bottom: 20px;
+    width: 100%;
 }
 
 .conversation-card {
@@ -123,4 +104,34 @@ header {
 .conversation-card:hover {
     transition: background-color 0.3s;
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-areas: 
+            "sidebar"
+            "content";
+        grid-template-columns: 1fr;
+    }
+    
+    aside {
+        position: relative;
+        height: auto;
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .history-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        font-size: 24px;
+    }
+    
+    .conversation-card {
+        padding: 10px;
+    }
 }

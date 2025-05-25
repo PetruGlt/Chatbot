@@ -35,23 +35,11 @@ aside {
     flex-direction: column;
     gap: 10px;
     padding: 20px;
+    height: 100vh;
     overflow: hidden;
 }
 
-#newConversation{
-    background: transparent;
-    color: #8aa277;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 35px;
-    font-family: 'Verdana';
-    font-weight: bold;
-}
-
-#history{
+#newConversation, #history, #logout {
     background: transparent;
     color: #405d27;
     border: none;
@@ -65,29 +53,11 @@ aside {
     transition: color 0.2s;
 }
 
-#logout{
-    background: transparent;
-    color: #405d27;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 35px;
-    font-family: 'Verdana';
-    font-weight: bold;
-    transition: color 0.2s;
-}
-
-#history:hover{
-    transition-timing-function: ease-in-out;
-    transition: color 0.2s;
+#newConversation {
     color: #8aa277;
 }
 
-#logout:hover{
-    transition-timing-function: ease-in-out;
-    transition: color 0.2s;
+#history:hover, #logout:hover {
     color: #8aa277;
 }
 
@@ -140,6 +110,7 @@ header {
     border-top: 1px solid #405d27;
     background: transparent;
     height: 60px;
+    margin-bottom: 40px;
 }
 
 .input-bar input {

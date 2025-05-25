@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const qaList = document.getElementById("qaList");
     const logoutBtn = document.getElementById("logout");
     const username = sessionStorage.getItem("username");
+    const haluRapBtn = document.getElementById("halurap");
 
     if (!username) {
         window.location.href = "/login";
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     //--- Mock Data for Testing ---
-    // Uncomment for standalone testing without a backend
+    //Uncomment for standalone testing without a backend
     // const mockQA = [
     //     { id: 101, question: "How do I update my billing address?", answer: "Visit the billing section in your account." },
     //     { id: 102, question: "Is international shipping available?", answer: "Yes, we ship to over 100 countries." },
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //     <p class="hint">Press Enter to submit (will validate the answer)</p>
     //     <input type="hidden" class="validation-code" value="0">
     // `;
-
+    //
     //     const textarea = card.querySelector("textarea");
     //     textarea.addEventListener("keydown", (e) => {
     //         if (e.key === "Enter" && !e.shiftKey) {
@@ -44,18 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
     //             submitAnswer(qa.id, updatedAnswer, card);
     //         }
     //     });
-
+    //
     //     card.addEventListener("click", (e) => {
     //         if (e.target.tagName !== "TEXTAREA") { // Avoid redirect when editing textarea
     //             sessionStorage.setItem("qaId", qa.id);
     //             window.location.href = "/qaDetail"; // Path to Q&A detail page
     //         }
     //     });
-
+    //
     //     qaList.appendChild(card);
     // });
 
-
+  
     //--- Fetch Q&A Data ---
     fetch("/questions", { // ! probabil alt nume aici !
         method: "POST",
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.innerHTML = `
                     <h3>Q&A ${qa.id}</h3>
                     <p><strong>Q:</strong> ${qa.question}</p>
-                    <textarea>${qa.answer}</textarea>
+                    <textarea data-original="${qa.answer}">${qa.answer}</textarea>
                     <p class="hint">Press Enter to submit (will validate the answer)</p>
                     <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                 `;
@@ -122,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     card.innerHTML = `
                         <h3>Q&A ${qa.id}</h3>
                         <p><strong>Q:</strong> ${qa.question}</p>
-                        <textarea>${qa.answer}</textarea>
+                        <textarea data-original="${qa.answer}"> ${qa.answer}</textarea>
                         <p class="hint">Press Enter to submit (will validate the answer)</p>
                         <input type="hidden" class="validation-code" value="${qa.validation || "0"}">
                     `;
@@ -152,6 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/login";
     });
 
+    haluRapBtn.addEventListener("click", () => {
+        window.location.href = "/showHallucination";
+    });
+
     // --- Submit Answer Function ---
     /**
      * Submits an updated answer to the backend and removes the Q&A card
@@ -164,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const textarea = elementToRemove.querySelector("textarea");
         const originalAnswer = textarea.dataset.original?.trim() || "";
 
+        console.log("aici e origina: " + originalAnswer);
         if (!updatedAnswer) {
             alert("Answer cannot be empty!");
             return;
@@ -177,24 +183,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ 
-                id: id, 
+            body: JSON.stringify({
+                id: id,
                 updatedAnswer: payloadAnswer,
                 username: username,
                 validation: "1"
             })
         })
             .then(response => {
-                if (!response.ok) throw new Error("Failed to submit answer");
+                if (!response.ok) {
+                    console.error("Response not OK:", response.status, response.statusText);
+                    throw new Error("Failed to submit answer");
+                }
                 return response.json();
             })
             .then(data => {
-                if(data.success) {
+                if (data.success) {
                     elementToRemove.remove();
                     console.log(`Answer submitted for ID ${id}`);
                     reloadContent();
-                }
-                else {
+                } else {
                     throw new Error(data.message || "Validation failed");
                 }
             })

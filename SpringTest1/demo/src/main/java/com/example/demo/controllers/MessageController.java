@@ -112,7 +112,8 @@ public class MessageController {
     @ResponseBody
     public Map<String, Object> updateExpertAnswer(@RequestBody Map<String, Object> payload) {
         Long questionId = Long.valueOf(payload.get("id").toString());
-        String updatedAnswer = payload.get("updatedAnswer").toString();
+        Object updatedAnswerObj = payload.get("updatedAnswer");
+        String updatedAnswer = updatedAnswerObj != null ? updatedAnswerObj.toString() : null;
         String username = payload.get("username").toString();
 
         Conversation conversation = messageService.getConversationById(questionId);
@@ -144,12 +145,13 @@ public class MessageController {
             map.put("question", c.getQuestion());
             map.put("answer", c.getAnswer());
             map.put("validation", c.getChecked() ? "1" : "0");
+            map.put("validatedAnswer", c.getUpdatedResponse());
             result.add(map);
         }
         return result;
     }
 
-    @PostMapping("/conversationID")
+    @PostMapping("/get-latest-conversationID")
     @ResponseBody
     public Map<String, Object> getLastConversationId(@RequestBody Map<String, String> payload) {
         String username = payload.get("username");
@@ -161,6 +163,26 @@ public class MessageController {
     }
 
 
+    @GetMapping("/get-messages")
+    @ResponseBody
+    public List<Map<String, Object>> getMessages(@RequestParam Integer conversationId) {
+        List<Conversation> messages = messageService.getMessagesByConversation(conversationId);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Conversation c : messages) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("question", c.getQuestion());
+            map.put("answer", c.getAnswer());
+            map.put("user", c.getUser());
+            map.put("conversationId", c.getConversationId());
+            map.put("validatedAnswer", c.getUpdatedResponse());
+            result.add(map);
+        }
+
+        return result;
+    }
+
 //    public String sendMessage(
 //            @RequestParam("question") String question,
 //            @RequestParam("username") String username,
@@ -170,6 +192,9 @@ public class MessageController {
 //        return messageService.sendQuestion(question, username);
 //    }
 
-
+    @GetMapping("/showHallucination")
+    public String showHallucination() {
+        return "haluPageExpert";
+    }
 
 }
