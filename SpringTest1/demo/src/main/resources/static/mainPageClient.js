@@ -25,13 +25,18 @@ const loadMessages = async (container, conversationId) => {
 
 
                 const questionEl = document.createElement("article");
-
                 questionEl.className = "message question";
                 questionEl.textContent = `Q: ${questionText}`;
 
                 const answerEl = document.createElement("article");
-                answerEl.className = "message answer";
-                answerEl.textContent = answerText;
+                if (answerEl.dataset.validation == "1") {
+                    answerEl.className = "message validated answer";
+                    answerEl.textContent = `A (validated): ${answerText}`;
+                }
+                else {
+                    answerEl.className = "message answer";
+                    answerEl.textContent = `A: ${answerText}`;
+                }
                 answerEl.dataset.question = questionText;
 
                 const message = document.createElement("div");
@@ -284,10 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             const isNowValidated = validatedMessage.validation === "1";
 
                             if (matchingQuestion && needsValidation && isNowValidated) {
-                                if (validatedMessage.validatedAnswer==null){
+                                if (validatedMessage.validatedAnswer==null) {
                                     answerEl.textContent = `A (validated): ${validatedMessage.answer}`;
                                 }
-                                else{
+                                else {
                                     answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
                                 }
                                 answerEl.dataset.validation = "1";
