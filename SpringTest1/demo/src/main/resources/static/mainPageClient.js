@@ -287,7 +287,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 answerEl.textContent = `A (validated): ${validatedMessage.validatedAnswer}`;
                                 answerEl.dataset.validation = "1";
                                 answerEl.classList.add("validated answer");
-                                answerEl.className = "validated answer";
 
                                 const messageDiv = answerEl.closest('.message');
                                 if (messageDiv && messageValidationMap.has(messageDiv)) {

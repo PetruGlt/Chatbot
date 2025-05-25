@@ -4,16 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const historyBtn = document.getElementById("history");
     const logoutBtn = document.getElementById("logout");
     const username = sessionStorage.getItem("username");
-    const userIdDisplay = document.getElementById("userIdDisplay");
 
-    if (userIdDisplay && username) {
-        userIdDisplay.textContent = `User ID: ${username}`;
-    }
 
     if (!username) {
         window.location.href = "/login";
         return;
     }
+
 
     if (sessionStorage.getItem("hasSentFirstMessage") === null) {
         setUserSentMessage(false);
@@ -66,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     newConversationBtn.addEventListener("click", async() => {
-        window.location.href = "/mainPageClient";    //path!!
+        window.location.href = "/mainPageClient";
     });
 
 
