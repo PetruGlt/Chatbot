@@ -191,6 +191,9 @@ public class MessageController {
 //        return messageService.sendQuestion(question, username);
 //    }
 
-
+    @GetMapping("/showHallucination")
+    public String showHallucination() {
+        return "haluPageExpert";
+    }
 
 }
