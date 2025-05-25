@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "mainPageExpert.html";
     });
 
-        //test local in loc de fetch(functioneaza)
+        //test local in loc de fetch(functioneaza, am testat-o iar cu static)
         // const mockedData = [
         //     {
         //         id: 101,
