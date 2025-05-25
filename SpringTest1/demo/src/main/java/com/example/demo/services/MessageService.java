@@ -39,6 +39,14 @@ public class MessageService {
         return response.getBody().getAnswer();
     }
 
+    public Map<String, Long> getStatistics() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("allAnswers", conversationRepository.count());
+        stats.put("validatedAnswers", conversationRepository.countDistinctByCheckedTrue());
+        stats.put("correctAnswers", conversationRepository.countDistinctByUpdatedResponseNull());
+        return stats;
+    }
+
     public Conversation saveConversation(Conversation conversation) {
         return conversationRepository.save(conversation);
     }
