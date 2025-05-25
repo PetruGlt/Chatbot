@@ -112,7 +112,8 @@ public class MessageController {
     @ResponseBody
     public Map<String, Object> updateExpertAnswer(@RequestBody Map<String, Object> payload) {
         Long questionId = Long.valueOf(payload.get("id").toString());
-        String updatedAnswer = payload.get("updatedAnswer").toString();
+        Object updatedAnswerObj = payload.get("updatedAnswer");
+        String updatedAnswer = updatedAnswerObj != null ? updatedAnswerObj.toString() : null;
         String username = payload.get("username").toString();
 
         Conversation conversation = messageService.getConversationById(questionId);
