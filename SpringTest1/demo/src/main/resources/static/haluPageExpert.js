@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //         const card = document.createElement("div");
         //         card.className = "halu-card";
         //         card.innerHTML = `
-        //                     <h3>Q&A ${halu.id}</h3>
+        //                     <h3>Hallucination ${halu.id}</h3>
         //                     <p><strong>User:</strong> ${halu.user}</p>
         //                     <p><strong>Question:</strong> ${halu.question}</p>
         //                     <p><strong>Original Answer:</strong> ${halu.answer}</p>
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const card = document.createElement("div");
                 card.className = "halu-card";
                 card.innerHTML = `
-                <h3>Q&A ${halu.id}</h3>
+                <h3>Hallucination ${halu.id}</h3>
                 <p><strong>User:</strong> ${halu.user}</p>
                 <p><strong>Question:</strong> ${halu.question}</p>
                 <p><strong>Original Answer:</strong> ${halu.answer}</p>
