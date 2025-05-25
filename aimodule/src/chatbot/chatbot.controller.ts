@@ -12,8 +12,8 @@ export class ChatbotController {
         if(body == null)
             return "Please provide a request body.";
         
-        if(body.conversationId) {
-            const conversation = await this.conversationService.getHistory(body.conversationId);
+        if(body.conversationId && body.userName) {
+            const conversation = await this.conversationService.getHistory(body.conversationId, body.userName);
             
             const answer = await this.chatbotService.ask(conversation, body.prompt);
             
