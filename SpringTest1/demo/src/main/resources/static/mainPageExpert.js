@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     haluRapBtn.addEventListener("click", () => {
-        window.location.href = "/templates/haluPageExpert.html";
+        window.location.href = "haluPageExpert.html";
     });
 
     // --- Submit Answer Function ---
