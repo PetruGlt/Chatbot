@@ -440,7 +440,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory(conversationId);
+                const result = await conversationService.getHistory(conversationId, 'user');
 
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: 'Q1' }] },
@@ -458,7 +458,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să returneze array gol pentru conversație inexistentă', async () => {
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce([]);
 
-                const result = await conversationService.getHistory('inexistent');
+                const result = await conversationService.getHistory('inexistent', 'user');
                 expect(result).toEqual([]);
             });
 
@@ -480,7 +480,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('test');
+                const result = await conversationService.getHistory('test', 'user');
 
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: null }] },
@@ -495,7 +495,7 @@ describe('AI Module Complete Tests', () => {
                     new Error('DB Connection Error')
                 );
 
-                await expect(conversationService.getHistory('test')).rejects.toThrow('DB Connection Error');
+                await expect(conversationService.getHistory('test', 'user')).rejects.toThrow('DB Connection Error');
             });
 
             it('ar trebui să proceseze un singur rând', async () => {
@@ -508,7 +508,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('single');
+                const result = await conversationService.getHistory('single', 'user');
                 expect(result).toHaveLength(2);
             });
 
@@ -522,7 +522,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('empty');
+                const result = await conversationService.getHistory('empty', 'user');
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: '' }] },
                     { role: 'model', parts: [{ text: '' }] },
@@ -538,7 +538,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(unorderedRows);
 
-                const result = await conversationService.getHistory('test');
+                const result = await conversationService.getHistory('test', 'user');
 
                 expect(result[0].parts[0].text).toBe('Q3');
                 expect(result[2].parts[0].text).toBe('Q1');
