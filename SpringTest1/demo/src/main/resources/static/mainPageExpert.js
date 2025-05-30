@@ -146,6 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
+    setInterval(reloadContent, 5000);
+
     // --- Event Listeners for Buttons ---
     logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("username");
@@ -213,4 +215,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-setInterval(reloadContent,5000);
