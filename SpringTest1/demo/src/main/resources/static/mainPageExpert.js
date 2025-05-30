@@ -212,3 +212,5 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 });
+
+setInterval(reloadContent,5000);
