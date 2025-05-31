@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    // setInterval(reloadContent, 5000);
+    setInterval(reloadContent, 10000); //Odata la 10 secunde
 
     // --- Event Listeners for Buttons ---
     logoutBtn.addEventListener("click", () => {
