@@ -177,6 +177,7 @@ public class MessageController {
             map.put("user", c.getUser());
             map.put("conversationId", c.getConversationId());
             map.put("validatedAnswer", c.getUpdatedResponse());
+            map.put("checked", c.getChecked());
             result.add(map);
         }
 
