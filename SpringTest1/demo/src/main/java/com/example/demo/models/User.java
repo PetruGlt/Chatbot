@@ -20,7 +20,7 @@ public class User {
     private String password; // Parola utilizatorului (ar trebui să fie stocată criptat, ex: BCrypt)
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('USER','ADMIN')")
+    @Column(columnDefinition = "ENUM('USER','ADMIN', 'EXPERT')")
     private AccessLevel access;
 
     // Getter pentru parola utilizatorului
