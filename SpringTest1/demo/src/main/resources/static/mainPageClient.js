@@ -29,7 +29,7 @@ const loadMessages = async (container, conversationId) => {
                 questionEl.textContent = `Q: ${questionText}`;
 
                 const answerEl = document.createElement("article");
-                answerEl.dataset.validation = (msg.validatedAnswer != null) ? "1" : "0";
+                answerEl.dataset.validation = (msg.checked == 1) ? "1" : "0";
                 if (answerEl.dataset.validation == "1") {
                     answerEl.className = "message validated answer";
                     answerEl.textContent = `A (validated): ${answerText}`;
