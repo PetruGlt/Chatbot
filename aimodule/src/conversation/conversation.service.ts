@@ -35,4 +35,28 @@ export class ConversationService {
     
         return result;
     }
+
+    public async getInvalidResponses() {
+        return await this.prisma.conversation_history.findMany({
+            where: {
+                checked: true,
+                trained: false,
+                NOT: {
+                    updated_response: null
+                },
+            },
+            take: 10
+        });
+    }
+
+    public async updateInvalidResponses(entries) {
+        return await this.prisma.conversation_history.updateMany({
+            where: {
+                OR: entries
+            },
+            data: {
+                trained: true
+            }
+        });
+    }
 }

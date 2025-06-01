@@ -15,11 +15,12 @@ model conversation_history {
   answer           String   @db.Text
   updated_response String?  @db.Text
   checked          Boolean? @default(false)
+  trained          Boolean? @default(false)
 }
 
 model users {
   username String       @id @db.VarChar(255)
-  password String?      @db.VarChar(255)
+  password String       @db.VarChar(255)
   access   users_access
 }
 
