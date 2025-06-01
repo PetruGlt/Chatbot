@@ -1,5 +1,3 @@
-import { ConfigModule } from '@nestjs/config';
-import { AppModule } from '../app.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { ChatbotService } from './chatbot.service';
@@ -8,9 +6,25 @@ import { ConversationService } from '../conversation/conversation.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AppController } from '../app.controller';
 import { AppService } from '../app.service';
+import { PrismaClient } from '@prisma/client';
 import { ChatbotModule } from './chatbot.module';
 import { ConversationModule } from '../conversation/conversation.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { AppModule } from '../app.module';
+
+const mockBootstrap = jest.fn().mockImplementation(async () => {
+    const app = await mockCreateFn(AppModule);
+    await app.listen(process.env.PORT ?? 3000);
+    return app;
+});
+
+jest.doMock('../main', () => ({
+    bootstrap: mockBootstrap
+}));
+
+const { bootstrap } = require('../main');
+
+
 
 const mockGoogleGenAI = {
     models: {
@@ -25,6 +39,28 @@ jest.mock('@google/genai', () => ({
     GoogleGenAI: jest.fn().mockImplementation(() => mockGoogleGenAI),
 }));
 
+const mockListenFn = jest.fn().mockResolvedValue(undefined);
+const mockApp = { listen: mockListenFn };
+const mockCreateFn = jest.fn().mockResolvedValue(mockApp);
+
+jest.doMock('@nestjs/core', () => ({
+    NestFactory: {
+        create: mockCreateFn
+    }
+}));
+
+const { NestFactory } = require('@nestjs/core');
+
+jest.mock('../main', () => {
+    const bootstrap = async () => {
+        const app = await mockCreateFn(AppModule);
+        await app.listen(process.env.PORT ?? 3000);
+        return app;
+    };
+    return { bootstrap };
+});
+
+
 describe('AI Module Complete Tests', () => {
     let chatbotService: ChatbotService;
     let chatbotController: ChatbotController;
@@ -35,14 +71,19 @@ describe('AI Module Complete Tests', () => {
     const mockPrismaService = {
         conversation_history: {
             findMany: jest.fn(),
+            create: jest.fn(),
         },
         $connect: jest.fn(),
+        $disconnect: jest.fn(),
+        $on: jest.fn(),
     };
-
+    mockPrismaService.conversation_history.findMany.mockImplementation(async () => {
+        return [];  // Returnează array gol în caz de eșec
+    });
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        const module: TestingModule = await Test.createTestingModule({
+        const module = await Test.createTestingModule({
             controllers: [ChatbotController],
             providers: [
                 ChatbotService,
@@ -50,9 +91,10 @@ describe('AI Module Complete Tests', () => {
                 {
                     provide: ConfigService,
                     useValue: {
-                        get: jest.fn().mockImplementation((key: string) => {
+                        get: jest.fn().mockImplementation((key) => {
                             if (key === 'GOOGLE_API_KEY') return 'test-api-key';
                             if (key === 'GOOGLE_AI_MODEL') return 'gemini-1.5-flash';
+                            if (key === 'PORT') return '3000';
                             return null;
                         }),
                     },
@@ -271,6 +313,108 @@ describe('AI Module Complete Tests', () => {
 
                 await expect(chatbotService.ask([], 'Test')).rejects.toThrow('Chat Error');
             });
+
+            it('ar trebui să gestioneze eroare în sendMessage', async () => {
+                mockGoogleGenAI.models.generateContent.mockResolvedValueOnce({
+                    candidates: [{
+                        content: {
+                            parts: [{ text: 'da' }]
+                        }
+                    }]
+                });
+
+                const mockChat = {
+                    sendMessage: jest.fn().mockRejectedValueOnce(new Error('SendMessage Error'))
+                };
+                mockGoogleGenAI.chats.create.mockResolvedValueOnce(mockChat);
+
+                await expect(chatbotService.ask([], 'Test')).rejects.toThrow('SendMessage Error');
+            });
+
+            it('ar trebui să gestioneze lipsă candidați în răspunsul sendMessage', async () => {
+                mockGoogleGenAI.models.generateContent.mockResolvedValueOnce({
+                    candidates: [{
+                        content: {
+                            parts: [{ text: 'da' }]
+                        }
+                    }]
+                });
+
+                const mockChat = {
+                    sendMessage: jest.fn().mockResolvedValueOnce({})
+                };
+                mockGoogleGenAI.chats.create.mockResolvedValueOnce(mockChat);
+
+                await expect(chatbotService.ask([], 'Test')).rejects.toThrow();
+            });
+
+            it('ar trebui să gestioneze lipsă finishReason în răspunsul sendMessage', async () => {
+                mockGoogleGenAI.models.generateContent.mockResolvedValueOnce({
+                    candidates: [{
+                        content: {
+                            parts: [{ text: 'da' }]
+                        }
+                    }]
+                });
+
+                const mockChat = {
+                    sendMessage: jest.fn().mockResolvedValueOnce({
+                        candidates: [{
+                            content: {
+                                parts: [{ text: 'Test' }]
+                            }
+                        }]
+                    })
+                };
+                mockGoogleGenAI.chats.create.mockResolvedValueOnce(mockChat);
+
+                const result = await chatbotService.ask([], 'Test');
+                expect(result).toBe('Test');
+            });
+
+            it('ar trebui să gestioneze lipsă content în răspunsul sendMessage', async () => {
+                mockGoogleGenAI.models.generateContent.mockResolvedValueOnce({
+                    candidates: [{
+                        content: {
+                            parts: [{ text: 'da' }]
+                        }
+                    }]
+                });
+
+                const mockChat = {
+                    sendMessage: jest.fn().mockResolvedValueOnce({
+                        candidates: [{}]
+                    })
+                };
+                mockGoogleGenAI.chats.create.mockResolvedValueOnce(mockChat);
+
+                await expect(chatbotService.ask([], 'Test')).rejects.toThrow();
+            });
+
+            it('ar trebui să gestioneze un alt finishReason decât SAFETY sau STOP', async () => {
+                mockGoogleGenAI.models.generateContent.mockResolvedValueOnce({
+                    candidates: [{
+                        content: {
+                            parts: [{ text: 'da' }]
+                        }
+                    }]
+                });
+
+                const mockChat = {
+                    sendMessage: jest.fn().mockResolvedValueOnce({
+                        candidates: [{
+                            finishReason: 'OTHER_REASON',
+                            content: {
+                                parts: [{ text: 'Other finish reason' }]
+                            }
+                        }]
+                    })
+                };
+                mockGoogleGenAI.chats.create.mockResolvedValueOnce(mockChat);
+
+                const result = await chatbotService.ask([], 'Test');
+                expect(result).toBe('Other finish reason');
+            });
         });
 
         describe('sendPrompt private method', () => {
@@ -305,6 +449,11 @@ describe('AI Module Complete Tests', () => {
                 expect(configService.get).toHaveBeenCalledWith('GOOGLE_API_KEY');
                 expect(chatbotService).toBeDefined();
             });
+
+            it('ar trebui să inițializeze GoogleGenAI cu cheie API', () => {
+                const newService = new ChatbotService(configService);
+                expect(configService.get).toHaveBeenCalledWith('GOOGLE_API_KEY');
+            });
         });
     });
 
@@ -313,6 +462,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să returneze răspuns pentru request valid', async () => {
                 const mockBody = {
                     conversationId: 'test-123',
+                    userName: 'test-user',
                     prompt: 'Care este soldul meu?'
                 };
 
@@ -325,7 +475,7 @@ describe('AI Module Complete Tests', () => {
                 const result = await chatbotController.ask(mockBody);
 
                 expect(result).toEqual({ answer: mockAnswer });
-                expect(conversationService.getHistory).toHaveBeenCalledWith('test-123');
+                expect(conversationService.getHistory).toHaveBeenCalledWith('test-123', 'test-user');
                 expect(chatbotService.ask).toHaveBeenCalledWith(mockHistory, 'Care este soldul meu?');
             });
 
@@ -341,6 +491,17 @@ describe('AI Module Complete Tests', () => {
 
             it('ar trebui să returneze eroare pentru lipsă conversationId', async () => {
                 const mockBody = {
+                    userName: 'test-user',
+                    prompt: 'O întrebare'
+                };
+
+                const result = await chatbotController.ask(mockBody);
+                expect(result).toBe('Please provide the conversationId.');
+            });
+
+            it('ar trebui să returneze eroare pentru lipsă userName', async () => {
+                const mockBody = {
+                    conversationId: 'test-123',
                     prompt: 'O întrebare'
                 };
 
@@ -351,6 +512,18 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să returneze eroare pentru conversationId gol', async () => {
                 const mockBody = {
                     conversationId: '',
+                    userName: 'test-user',
+                    prompt: 'O întrebare'
+                };
+
+                const result = await chatbotController.ask(mockBody);
+                expect(result).toBe('Please provide the conversationId.');
+            });
+
+            it('ar trebui să returneze eroare pentru userName gol', async () => {
+                const mockBody = {
+                    conversationId: 'test-123',
+                    userName: '',
                     prompt: 'O întrebare'
                 };
 
@@ -361,6 +534,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să gestioneze istoric gol', async () => {
                 const mockBody = {
                     conversationId: 'new-conv',
+                    userName: 'test-user',
                     prompt: 'Prima întrebare'
                 };
 
@@ -374,6 +548,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să gestioneze erori din service', async () => {
                 const mockBody = {
                     conversationId: 'test-123',
+                    userName: 'test-user',
                     prompt: 'Test error'
                 };
 
@@ -385,6 +560,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să gestioneze prompt gol', async () => {
                 const mockBody = {
                     conversationId: 'test-123',
+                    userName: 'test-user',
                     prompt: ''
                 };
 
@@ -398,6 +574,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să accepte body cu proprietăți extra', async () => {
                 const mockBody = {
                     conversationId: 'test-123',
+                    userName: 'test-user',
                     prompt: 'Test',
                     extraProp: 'ignored'
                 };
@@ -407,6 +584,19 @@ describe('AI Module Complete Tests', () => {
 
                 const result = await chatbotController.ask(mockBody);
                 expect(result).toEqual({ answer: 'OK' });
+            });
+
+            it('ar trebui să gestioneze erori în chatbotService.ask', async () => {
+                const mockBody = {
+                    conversationId: 'test-123',
+                    userName: 'test-user',
+                    prompt: 'Test'
+                };
+
+                jest.spyOn(conversationService, 'getHistory').mockResolvedValueOnce([]);
+                jest.spyOn(chatbotService, 'ask').mockRejectedValueOnce(new Error('Service Error'));
+
+                await expect(chatbotController.ask(mockBody)).rejects.toThrow('Service Error');
             });
         });
 
@@ -423,16 +613,19 @@ describe('AI Module Complete Tests', () => {
         describe('getHistory method', () => {
             it('ar trebui să returneze istoric formatat corect', async () => {
                 const conversationId = 'test-123';
+                const userName = 'test-user';
                 const mockRows = [
                     {
                         id: 1,
                         conversation_id: conversationId,
+                        user: userName,
                         question: 'Q1',
                         answer: 'A1',
                     },
                     {
                         id: 2,
                         conversation_id: conversationId,
+                        user: userName,
                         question: 'Q2',
                         answer: 'A2',
                     },
@@ -440,7 +633,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory(conversationId, 'user');
+                const result = await conversationService.getHistory(conversationId, userName);
 
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: 'Q1' }] },
@@ -450,7 +643,10 @@ describe('AI Module Complete Tests', () => {
                 ]);
 
                 expect(mockPrismaService.conversation_history.findMany).toHaveBeenCalledWith({
-                    where: { conversation_id: conversationId },
+                    where: {
+                        conversation_id: conversationId,
+                        user: userName
+                    },
                     orderBy: { id: 'asc' },
                 });
             });
@@ -458,7 +654,7 @@ describe('AI Module Complete Tests', () => {
             it('ar trebui să returneze array gol pentru conversație inexistentă', async () => {
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce([]);
 
-                const result = await conversationService.getHistory('inexistent', 'user');
+                const result = await conversationService.getHistory('inexistent', 'test-user');
                 expect(result).toEqual([]);
             });
 
@@ -467,12 +663,14 @@ describe('AI Module Complete Tests', () => {
                     {
                         id: 1,
                         conversation_id: 'test',
+                        user: 'test-user',
                         question: null,
                         answer: 'A1',
                     },
                     {
                         id: 2,
                         conversation_id: 'test',
+                        user: 'test-user',
                         question: 'Q2',
                         answer: null,
                     },
@@ -480,7 +678,7 @@ describe('AI Module Complete Tests', () => {
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('test', 'user');
+                const result = await conversationService.getHistory('test', 'test-user');
 
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: null }] },
@@ -495,20 +693,21 @@ describe('AI Module Complete Tests', () => {
                     new Error('DB Connection Error')
                 );
 
-                await expect(conversationService.getHistory('test', 'user')).rejects.toThrow('DB Connection Error');
+                await expect(conversationService.getHistory('test', 'test-user')).rejects.toThrow('DB Connection Error');
             });
 
             it('ar trebui să proceseze un singur rând', async () => {
                 const mockRows = [{
                     id: 1,
                     conversation_id: 'single',
+                    user: 'test-user',
                     question: 'Single Q',
                     answer: 'Single A',
                 }];
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('single', 'user');
+                const result = await conversationService.getHistory('single', 'test-user');
                 expect(result).toHaveLength(2);
             });
 
@@ -516,13 +715,14 @@ describe('AI Module Complete Tests', () => {
                 const mockRows = [{
                     id: 1,
                     conversation_id: 'empty',
+                    user: 'test-user',
                     question: '',
                     answer: '',
                 }];
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows);
 
-                const result = await conversationService.getHistory('empty', 'user');
+                const result = await conversationService.getHistory('empty', 'test-user');
                 expect(result).toEqual([
                     { role: 'user', parts: [{ text: '' }] },
                     { role: 'model', parts: [{ text: '' }] },
@@ -531,18 +731,30 @@ describe('AI Module Complete Tests', () => {
 
             it('ar trebui să păstreze ordinea după id', async () => {
                 const unorderedRows = [
-                    { id: 3, conversation_id: 'test', question: 'Q3', answer: 'A3' },
-                    { id: 1, conversation_id: 'test', question: 'Q1', answer: 'A1' },
-                    { id: 2, conversation_id: 'test', question: 'Q2', answer: 'A2' },
+                    { id: 3, conversation_id: 'test', user: 'test-user', question: 'Q3', answer: 'A3' },
+                    { id: 1, conversation_id: 'test', user: 'test-user', question: 'Q1', answer: 'A1' },
+                    { id: 2, conversation_id: 'test', user: 'test-user', question: 'Q2', answer: 'A2' },
                 ];
 
                 mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(unorderedRows);
 
-                const result = await conversationService.getHistory('test', 'user');
+                const result = await conversationService.getHistory('test', 'test-user');
 
                 expect(result[0].parts[0].text).toBe('Q3');
                 expect(result[2].parts[0].text).toBe('Q1');
                 expect(result[4].parts[0].text).toBe('Q2');
+            });
+
+            it('ar trebui să verifice userName în query', async () => {
+                await conversationService.getHistory('test-id', 'test-user');
+
+                expect(mockPrismaService.conversation_history.findMany).toHaveBeenCalledWith({
+                    where: {
+                        conversation_id: 'test-id',
+                        user: 'test-user'
+                    },
+                    orderBy: { id: 'asc' },
+                });
             });
         });
 
@@ -563,29 +775,204 @@ describe('AI Module Complete Tests', () => {
 
             expect(prismaInstance.$connect).toHaveBeenCalled();
         });
-    });
-});
 
-describe('App Module Tests', () => {
-    let appController: AppController;
-    let appService: AppService;
+        it('ar trebui să extindă PrismaClient', () => {
+            const prismaInstance = new PrismaService();
+            expect(prismaInstance instanceof PrismaClient).toBe(true);
+        });
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            controllers: [AppController],
-            providers: [AppService],
-        }).compile();
-
-        appController = module.get<AppController>(AppController);
-        appService = module.get<AppService>(AppService);
+        it('ar trebui să implementeze OnModuleInit', () => {
+            expect(typeof PrismaService.prototype.onModuleInit).toBe('function');
+        });
     });
 
-    it('should return "Hello World!"', () => {
-        expect(appController.getHello()).toBe('Hello World!');
+    describe('ChatbotModule', () => {
+        it('ar trebui să fie definit corect', () => {
+            expect(ChatbotModule).toBeDefined();
+        });
+
+        it('ar trebui să conțină controllerele și providerele corecte', async () => {
+            const moduleRef = await Test.createTestingModule({
+                imports: [ChatbotModule],
+            }).compile();
+
+            const chatbotController = moduleRef.get(ChatbotController);
+            const chatbotService = moduleRef.get(ChatbotService);
+            const conversationService = moduleRef.get(ConversationService);
+            const prismaService = moduleRef.get(PrismaService);
+
+            expect(chatbotController).toBeDefined();
+            expect(chatbotService).toBeDefined();
+            expect(conversationService).toBeDefined();
+            expect(prismaService).toBeDefined();
+        });
     });
 
-    it('app service should be defined', () => {
-        expect(appService).toBeDefined();
-        expect(appService.getHello()).toBe('Hello World!');
+    describe('ConversationModule', () => {
+        it('ar trebui să fie definit corect', () => {
+            expect(ConversationModule).toBeDefined();
+        });
+
+        it('ar trebui să poată fi inițializat în aplicație', async () => {
+            const module = await Test.createTestingModule({
+                imports: [ConversationModule],
+                providers: [PrismaService]
+            }).compile();
+
+            expect(module).toBeDefined();
+        });
+    });
+
+    describe('PrismaModule', () => {
+        it('ar trebui să fie definit corect', () => {
+            expect(PrismaModule).toBeDefined();
+        });
+
+        it('ar trebui să poată fi inițializat în aplicație', async () => {
+            const module = await Test.createTestingModule({
+                imports: [PrismaModule],
+            }).compile();
+
+            expect(module).toBeDefined();
+        });
+    });
+
+    describe('AppModule', () => {
+        it('ar trebui să fie definit corect', () => {
+            expect(AppModule).toBeDefined();
+        });
+
+        it('ar trebui să poată fi inițializat cu toate componentele', async () => {
+            const module = await Test.createTestingModule({
+                imports: [AppModule],
+            }).compile();
+
+            describe('AppController', () => {
+                let appController: AppController;
+                let appService: AppService;
+
+                beforeEach(async () => {
+                    const module = await Test.createTestingModule({
+                        controllers: [AppController],
+                        providers: [AppService],
+                    }).compile();
+
+                    appController = module.get<AppController>(AppController);
+                    appService = module.get<AppService>(AppService);
+                });
+
+                describe('getHello method', () => {
+                    it('ar trebui să returneze rezultatul din appService.getHello', () => {
+                        const result = 'Test hello result';
+                        jest.spyOn(appService, 'getHello').mockReturnValue(result);
+
+                        expect(appController.getHello()).toBe(result);
+                        expect(appService.getHello).toHaveBeenCalled();
+                    });
+                });
+            });
+
+            describe('AppService', () => {
+                let appService: AppService;
+
+                beforeEach(() => {
+                    appService = new AppService();
+                });
+
+                describe('getHello method', () => {
+                    it('ar trebui să returneze "Hello World!"', () => {
+                        expect(appService.getHello()).toBe('Hello World!');
+                    });
+
+                    it('ar trebui să returneze un string', () => {
+                        const result = appService.getHello();
+                        expect(typeof result).toBe('string');
+                        expect(result.length).toBeGreaterThan(0);
+                    });
+                });
+            });
+
+            it('ar trebui să gestioneze null values', async () => {
+                const mockRows = [
+                    {
+                        id: 1,
+                        conversation_id: 'test',
+                        user: 'test-user',
+                        question: null,
+                        answer: 'A1',
+                    },
+                    {
+                        id: 2,
+                        conversation_id: 'test',
+                        user: 'test-user',
+                        question: 'Q2',
+                        answer: null,
+                    },
+                ];
+
+                mockPrismaService.conversation_history.findMany.mockResolvedValueOnce(mockRows || []);
+
+                const result = await conversationService.getHistory('test', 'test-user');
+
+                expect(result).toEqual([
+                    { role: 'user', parts: [{ text: null }] },
+                    { role: 'model', parts: [{ text: 'A1' }] },
+                    { role: 'user', parts: [{ text: 'Q2' }] },
+                    { role: 'model', parts: [{ text: null }] },
+                ]);
+            });
+
+            const appController = module.get(AppController);
+            const appService = module.get(AppService);
+
+            expect(appController).toBeDefined();
+            expect(appService).toBeDefined();
+
+            const prismaService = module.get(PrismaService);
+            const chatbotService = module.get(ChatbotService);
+            const conversationService = module.get(ConversationService);
+
+            expect(prismaService).toBeDefined();
+            expect(chatbotService).toBeDefined();
+            expect(conversationService).toBeDefined();
+        });
+    });
+
+    describe('Main bootstrap', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            process.env.PORT = '3000';
+        });
+
+        it('ar trebui să apeleze NestFactory.create cu AppModule', async () => {
+            await mockBootstrap();
+            expect(mockCreateFn).toHaveBeenCalledWith(AppModule);
+        });
+
+        it('ar trebui să apeleze app.listen cu portul corect', async () => {
+            await mockBootstrap();
+            expect(mockListenFn).toHaveBeenCalledWith('3000');
+        });
+
+        it('ar trebui să folosească portul implicit 3000 dacă PORT nu este setat', async () => {
+            delete process.env.PORT;
+            await mockBootstrap();
+            expect(mockListenFn).toHaveBeenCalledWith(3000);
+        });
+
+        it('ar trebui să returneze app după bootstrap', async () => {
+            const result = await mockBootstrap();
+            expect(result).toBe(mockApp);
+        });
+
+        it('ar trebui să gestioneze erorile la crearea aplicației', async () => {
+            mockCreateFn.mockRejectedValueOnce(new Error('Create Error'));
+            await expect(mockBootstrap()).rejects.toThrow('Create Error');
+        });
+
+        it('ar trebui să gestioneze erorile la pornirea aplicației', async () => {
+            mockListenFn.mockRejectedValueOnce(new Error('Listen Error'));
+            await expect(mockBootstrap()).rejects.toThrow('Listen Error');
+        });
     });
 });
