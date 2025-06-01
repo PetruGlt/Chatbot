@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs'; 
 
 @Injectable()
 export class ChatbotService {
 
     private apiClient;
 
-    constructor(private configService: ConfigService) {
+    constructor(private configService: ConfigService, private readonly httpService: HttpService) {
         this.apiClient = new GoogleGenAI({
             googleAuthOptions: {
                 apiKey: this.configService.get("GOOGLE_API_KEY")
@@ -17,6 +19,40 @@ export class ChatbotService {
 
     public async ask(history, prompt) {
         return await this.sendPrompt(history, prompt);
+    }
+
+    public async getLatestTunedModel() {
+        return this.configService.get("GOOGLE_AI_MODEL")
+    }
+
+    public async startTraining(trainingData) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/tunedModels?key=${this.configService.get("GOOGLE_API_KEY")}`;
+
+        const payload = {
+            "display_name": "banking-chatbot",
+            "tuned_model_source": {
+                "tuned_model": await this.getLatestTunedModel()
+            },
+            "tuning_task": {
+                "hyperparameters": {
+                    "batch_size": 4,
+                    "learning_rate": 0.001,
+                    "epoch_count": 5
+                },
+                "training_data": {
+                    "examples": {
+                        "examples": trainingData
+                    }
+                }
+            }
+        };
+
+        try {
+            const response = await firstValueFrom(this.httpService.post(url, payload));
+            return response.data;
+        } catch (error) {
+            console.log("POST")
+        }
     }
 
     private async sendPrompt(history, prompt) {
@@ -36,7 +72,7 @@ export class ChatbotService {
         }
         
         const chat = await this.apiClient.chats.create({
-            model: this.configService.get("GOOGLE_AI_MODEL"),
+            model: await this.getLatestTunedModel(),
             history: history,
         });
 
