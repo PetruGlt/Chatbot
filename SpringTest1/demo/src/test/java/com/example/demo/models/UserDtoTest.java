@@ -24,7 +24,7 @@ class UserDtoTest {
     @Test
     void testAccessAlwaysReturnsUSER() {
         UserDto dto = new UserDto();
-        dto.setAccess("ADMIN");
+        dto.setAccess("EXPERT");
         assertEquals(AccessLevel.USER, dto.getAccess());
     }
 }

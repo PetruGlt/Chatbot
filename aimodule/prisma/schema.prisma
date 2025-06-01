@@ -25,5 +25,5 @@ model users {
 
 enum users_access {
   USER
-  ADMIN
+  EXPERT
 }
