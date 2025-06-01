@@ -165,8 +165,8 @@ public class MessageController {
 
     @GetMapping("/get-messages")
     @ResponseBody
-    public List<Map<String, Object>> getMessages(@RequestParam Integer conversationId) {
-        List<Conversation> messages = messageService.getMessagesByConversation(conversationId);
+    public List<Map<String, Object>> getMessages(@RequestParam Integer conversationId, @RequestParam String username) {
+        List<Conversation> messages = messageService.getMessagesByConversation(username, conversationId);
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (Conversation c : messages) {
