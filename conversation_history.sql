@@ -10,3 +10,6 @@ ALTER TABLE conversation_history
 ADD COLUMN updated_response TEXT,
 ADD COLUMN checked BOOLEAN DEFAULT FALSE;
 
+ALTER TABLE conversation_history
+ADD column trained boolean default FALSE;
+
