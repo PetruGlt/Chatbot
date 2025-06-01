@@ -37,7 +37,8 @@ public class MessageServiceTest {
     void testSendQuestionReturnsTestString() {
         Integer conversationId = 1;
         String prompt = "test";
-        String result = messageService.sendQuestion(conversationId, prompt);
+        String username = "user1";
+        String result = messageService.sendQuestion(conversationId, prompt, username);
         assertNotNull(result);
     }
 

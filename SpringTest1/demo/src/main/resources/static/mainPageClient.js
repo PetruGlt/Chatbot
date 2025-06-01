@@ -4,57 +4,52 @@ function scrollToBottom() {
 }
 
 const loadMessages = async (container, conversationId) => {
-    if (conversationId!=null) {
-        try {
-            const data = await fetch(`/get-messages?conversationId=${conversationId}`);
-            const messages = await data.json();
-            if (messages.length > 0) {
-                document.getElementById("welcome").remove();
+    return new Promise(async (resolve, reject) => {
+        if (conversationId != null) {
+            try {
+                const data = await fetch(`/get-messages?conversationId=${conversationId}`);
+                const messages = await data.json();
+                if (messages.length > 0) {
+                    document.getElementById("welcome")?.remove();
+                }
+
+                messages.forEach(msg => {
+                    const questionText = msg.question;
+                    let answerText = msg.validatedAnswer ?? msg.answer;
+
+                    const questionEl = document.createElement("article");
+                    questionEl.className = "message question";
+                    questionEl.textContent = `Q: ${questionText}`;
+
+                    const answerEl = document.createElement("article");
+                    answerEl.dataset.validation = msg.checked == 1 ? "1" : "0";
+                    answerEl.className = msg.checked == 1 ? "message validated answer" : "message answer";
+                    answerEl.textContent = msg.checked == 1
+                        ? `A (validated): ${answerText}`
+                        : `A: ${answerText}`;
+                    answerEl.dataset.question = questionText;
+
+                    const message = document.createElement("div");
+                    message.classList.add("message");
+                    message.dataset.conversationId = sessionStorage.getItem("conversationId");
+
+                    message.appendChild(questionEl);
+                    message.appendChild(answerEl);
+                    container.appendChild(message);
+                    sessionStorage.setItem("hasSentFirstMessage", "true");
+                });
+
+                scrollToBottom();
+                resolve();
+            } catch (e) {
+                console.warn(e);
+                reject(e);
             }
-
-            messages.forEach(msg => {
-
-                const questionText = msg.question;
-                let answerText;
-                if(msg.validatedAnswer == null){
-                    answerText = msg.answer;
-                }
-                else{
-                    answerText = msg.validatedAnswer;
-                }
-
-
-                const questionEl = document.createElement("article");
-                questionEl.className = "message question";
-                questionEl.textContent = `Q: ${questionText}`;
-
-                const answerEl = document.createElement("article");
-                if (answerEl.dataset.validation == "1") {
-                    answerEl.className = "message validated answer";
-                    answerEl.textContent = `A (validated): ${answerText}`;
-                }
-                else {
-                    answerEl.className = "message answer";
-                    answerEl.textContent = `A: ${answerText}`;
-                }
-                answerEl.dataset.question = questionText;
-
-                const message = document.createElement("div");
-                message.classList.add("message");
-                message.dataset.conversationId = sessionStorage.getItem("conversationId");
-
-                message.appendChild(questionEl);
-                message.appendChild(answerEl);
-                container.appendChild(message);
-                sessionStorage.setItem("hasSentFirstMessage", "true");
-            });
-            scrollToBottom();
-
-        } catch (e) {
-            console.warn(e);
+        } else {
+            resolve();
         }
-    }
-}
+    });
+};
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -82,7 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const questionInput = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
     const conversationId = sessionStorage.getItem("conversationId")
-    loadMessages(chatBox, conversationId);
+    loadMessages(chatBox, conversationId).then(() => {
+        const hasMessages = document.querySelectorAll('.message .answer').length > 0;
+        if (hasMessages && !window.validationInterval) {
+            startValidationPolling();
+        }
+    });
 
     const username = sessionStorage.getItem("username");
 

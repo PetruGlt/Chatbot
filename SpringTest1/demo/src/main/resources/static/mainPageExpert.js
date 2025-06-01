@@ -139,13 +139,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     qaList.appendChild(card);
                 });
+
+            })
+            .then( () => {
+                restoreScroll();
+                setTimeout(() => { isReloading = false; }, 200);
             })
             .catch(error => {
                 console.error("Error loading Q&A:", error);
                 qaList.innerHTML = "<p>Failed to load Q&A data.</p>";
             });
+
     }
 
+
+    setInterval(reloadContent, 10000);
     // --- Event Listeners for Buttons ---
     logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("username");
@@ -212,3 +220,24 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 });
+
+const main = document.querySelector("main");
+let isRestoringScroll = false;
+
+main.addEventListener("scroll", () => {
+
+    if (isRestoringScroll || main.scrollTop === 0) return;  // Ignorăm scroll-ul generat artificial când restaurăm
+    const scrollTop = main.scrollTop;
+    console.log("main scrollPosition:", scrollTop);
+    localStorage.setItem("scrollPosition", scrollTop);
+});
+
+function restoreScroll() {
+    const scrollY = localStorage.getItem('scrollPosition');
+    console.log('DIN RESTORE SCROLL: '+ scrollY);
+    if (scrollY !== null) {
+        isRestoringScroll = true;
+        main.scrollTop = parseInt(scrollY);
+        setTimeout(() => { isRestoringScroll = false; }, 100);
+    }
+}

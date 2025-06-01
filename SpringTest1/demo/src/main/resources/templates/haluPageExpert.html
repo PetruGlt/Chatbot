@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Hallucination Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="stylesheet" href="/styleHaluPageExpert.css">
     <script src="/haluPageExpert.js" defer></script>
 </head>
@@ -10,12 +12,35 @@
 <div class="container">
     <aside>
         <div id="userIdDisplay" class="expert-id-display"></div>
-        <header id="hexpert">Hallucinations Report</header>
-        <button id="back">Back to main</button> <!-- functioneaza cand adaug static la css si script, codul e facut cum a facut si bianca deci trb sa mearga-->
+        <button id="hexpert">Expert Panel</button>
+        <button id="halurap">Hallucination Report</button>
+        <button id="logout">Logout</button>
     </aside>
     <main>
-        <header id="mheader">History of Halluciantions</header>
-        <section id="haluList" class="haluList"></section>
+        <header id="mheader">Hallucination Statistic</header>
+        <section id="stats">
+            <div class="stats-section">
+                <div class="stats-head">Validation Stats:</div>
+                <div id="correctmsg" class="stats-col1"></div>
+                <div id="incorrectmsg" class="stats-col2"></div>
+            </div>
+        </section>
+        <section id="wheel">
+            <div class="wheel-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </section>
+        <section id="legend">
+            <div class="legend-item">
+                <div class="legend-color1"></div>
+                <div>CORRECT</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color2"></div>
+                <div>INCORRECT</div>
+            </div>
+        </section>
+        <footer id="footer"></footer>
     </main>
 </div>
 </body>

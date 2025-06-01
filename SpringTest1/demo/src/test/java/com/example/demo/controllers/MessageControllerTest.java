@@ -62,7 +62,7 @@ class MessageControllerTest {
 
     @BeforeEach
     void setup() {
-        when(messageService.sendQuestion(any(Integer.class), any(String.class))).thenReturn("Mock answer");
+        when(messageService.sendQuestion(any(Integer.class), any(String.class), any(String.class))).thenReturn("Mock answer");
         when(messageService.saveConversation(any(Conversation.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
