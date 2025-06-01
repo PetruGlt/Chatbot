@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Hallucination Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="stylesheet" href="/styleHaluPageExpert.css">
     <script src="/haluPageExpert.js" defer></script>
 </head>
@@ -17,30 +19,25 @@
     <main>
         <header id="mheader">Hallucination Statistic</header>
         <section id="stats">
-            <div class="stats-content">
-                <div class="stats-section">
-                    <div class="stats-label">stats:</div>
-                    <div class="stats-label">- nr corecte: ???</div>
-                    <div class="stats-label">- nr gresite: ???</div>
-                </div>
+            <div class="stats-section">
+                <div class="stats-head">Validation Stats:</div>
+                <div id="correctmsg" class="stats-col1"></div>
+                <div id="incorrectmsg" class="stats-col2"></div>
             </div>
         </section>
         <section id="wheel">
             <div class="wheel-container">
-                <div class="wheel">
-                    <div class="wheel-segment segment-1"></div>
-                    <div class="wheel-segment segment-2"></div>
-                </div>
+                <canvas id="pieChart"></canvas>
             </div>
         </section>
         <section id="legend">
             <div class="legend-item">
-                <div class="legend-color" style="background-color: #8aa277;"></div>
-                <div>GRESITE</div>
+                <div class="legend-color1"></div>
+                <div>CORRECT</div>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background-color: #405d27;"></div>
-                <div>CORECTE</div>
+                <div class="legend-color2"></div>
+                <div>INCORRECT</div>
             </div>
         </section>
         <footer id="footer"></footer>
