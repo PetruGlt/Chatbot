@@ -3,11 +3,11 @@ function scrollToBottom() {
     conversation.scrollTop = conversation.scrollHeight;
 }
 
-const loadMessages = async (container, conversationId) => {
+const loadMessages = async (container, conversationId, username) => {
     return new Promise(async (resolve, reject) => {
         if (conversationId != null) {
             try {
-                const data = await fetch(`/get-messages?conversationId=${conversationId}`);
+                const data = await fetch(`/get-messages?conversationId=${conversationId}&username=${username}`, {});
                 const messages = await data.json();
                 if (messages.length > 0) {
                     document.getElementById("welcome")?.remove();
@@ -77,14 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const questionInput = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
     const conversationId = sessionStorage.getItem("conversationId")
-    loadMessages(chatBox, conversationId).then(() => {
+    const username = sessionStorage.getItem("username");
+    loadMessages(chatBox, conversationId, username).then(() => {
         const hasMessages = document.querySelectorAll('.message .answer').length > 0;
         if (hasMessages && !window.validationInterval) {
             startValidationPolling();
         }
     });
 
-    const username = sessionStorage.getItem("username");
+    // const username = sessionStorage.getItem("username");
 
     if (!username) {
         window.location.href = "/login";

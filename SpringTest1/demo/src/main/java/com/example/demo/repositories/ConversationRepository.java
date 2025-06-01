@@ -26,4 +26,5 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     Integer findMaxConversationIdByUser(@Param("username") String username);
 
     List<Conversation> getConversationByConversationId(Integer conversationId);
+    List<Conversation> getConversationByUserAndConversationId(String user, Integer conversationId);
 }
