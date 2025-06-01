@@ -36,13 +36,13 @@ class RedirectServiceTest {
     }
 
     @Test
-    void testRedirect_userFound_expertAccess() {
+    void testRedirect_userFound_adminAccess() {
         User user = new User();
-        user.setUsername("expert");
-        user.setAccess(AccessLevel.EXPERT);
+        user.setUsername("admin");
+        user.setAccess(AccessLevel.ADMIN);
 
-        String auth = "Basic " + base64("expert:secret");
-        when(userRepository.findByUsername("expert")).thenReturn(user);
+        String auth = "Basic " + base64("admin:secret");
+        when(userRepository.findByUsername("admin")).thenReturn(user);
         RedirectView view = redirectService.redirectLogin(auth);
         assertEquals("/mainExpert", view.getUrl());
     }
