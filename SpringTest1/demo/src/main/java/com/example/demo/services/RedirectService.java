@@ -33,7 +33,7 @@ public class RedirectService {
             System.out.println("Redirecting to user: " + username);
             return new RedirectView("/main");
         } else {
-            System.out.println("Redirecting to expert: " + username);
+            System.out.println("Redirecting to admin: " + username);
             return new RedirectView("/mainExpert");
         }
     }

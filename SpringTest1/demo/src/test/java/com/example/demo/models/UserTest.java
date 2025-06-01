@@ -24,8 +24,8 @@ public class UserTest {
     @Test
     void testSetAndGetAccess() {
         User user = new User();
-        user.setAccess(AccessLevel.EXPERT);
-        assertEquals(AccessLevel.EXPERT, user.getAccess());
+        user.setAccess(AccessLevel.ADMIN);
+        assertEquals(AccessLevel.ADMIN, user.getAccess());
     }
 
     @Test
