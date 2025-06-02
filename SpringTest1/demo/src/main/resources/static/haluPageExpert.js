@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (correctMsg && incorrectMsg && footer) {
                 correctMsg.textContent = `Correct: ${correctAnswers}`;
-                incorrectMsg.textContent = `Incorrect: ${incorrectAnswers}`;
+                incorrectMsg.textContent = `Corrected: ${incorrectAnswers}`;
                 footer.textContent = `Stats fetched from a total of ${validatedAnswers} validated messages`;
             }
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching statistics:", error);
             if (correctMsg && incorrectMsg) {
                 correctMsg.textContent = "Correct: N/A";
-                incorrectMsg.textContent = "Incorrect: N/A";
+                incorrectMsg.textContent = "Corrected: N/A";
             }
             if (footer) {
                 footer.textContent = "Stats could not be loaded";
@@ -84,7 +84,7 @@ function initializePieChart() {
     pieChartInstance = new Chart(pieChartCtx, {
         type: 'pie',
         data: {
-            labels: ['Number of Correct Messages', 'Number of Incorrect Messages'],
+            labels: ['Number of Correct Messages', 'Number of Corrected Messages'],
             datasets: [{
                 data: [0, 0],
                 backgroundColor: [
@@ -158,7 +158,7 @@ function startPolling() {
                 const incorrectAnswers = validatedAnswers - correctAnswers;
 
                 document.getElementById("correctmsg").textContent = `Correct: ${correctAnswers}`;
-                document.getElementById("incorrectmsg").textContent = `Incorrect: ${incorrectAnswers}`;
+                document.getElementById("incorrectmsg").textContent = `Corrected: ${incorrectAnswers}`;
                 document.getElementById("footer").textContent = `Stats fetched from a total of ${validatedAnswers} validated messages`;
                 updatePieChart(correctAnswers, incorrectAnswers);
             })
